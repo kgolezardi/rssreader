@@ -8,12 +8,12 @@
     <artifactId>rss-reader</artifactId>
     <version>1.0</version>
 
-    <dependencies>
+    <!--<dependencies>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.11</version>
         </dependency>
-    </dependencies>
+    </dependencies>-->
 
 </project>
