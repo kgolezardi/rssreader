@@ -25,7 +25,8 @@ public class ConfigCreator {
             url = url.substring(url.indexOf("//") + 2);
         if(url.startsWith("www."))
             url = url.substring(4);
-        url = url.substring(0, url.indexOf('/'));
+        if(url.contains("/"))
+            url = url.substring(0, url.indexOf('/'));
         if(RSS.contains(url)){
             return true;
         }
