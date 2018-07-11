@@ -18,7 +18,7 @@ public class ReadTest {
             URL url = new URL(message.link);
             String out = new Scanner(url.openStream(), "UTF-8").useDelimiter("\\A").next();
             InputStream in = url.openStream();
-            System.out.println(out);
+            System.out.println(message.link);
         }
     }
 }
