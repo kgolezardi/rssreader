@@ -23,8 +23,8 @@ public class Main {
         }
     }
 
-    public void fetchAllNews(){
-        for(Site site: DBHandler.getInstance().allSites())
-            site.FEU();
+    public void fetchAllNews() {
+        for (Site site : DBHandler.getInstance().allSites())
+            site.update();
     }
 }

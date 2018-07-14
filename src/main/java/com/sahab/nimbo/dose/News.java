@@ -10,28 +10,30 @@ import java.io.IOException;
 
 public class News {
     private Site site;
-    private String date;
+    private String date; // TODO: java date
     private String title;
-    private String URL;
+    private String url;
     private String description;
     private String text;
 
     public News(FeedMessage message, Site site) {
         this.site = site;
-        this.URL = message.getLink();
+        this.url = message.getLink();
         this.date = message.getPubDate();
         this.description = message.getDescription();
         this.title = message.getTitle();
     }
 
+    // TODO: normal constructor
+
     boolean addToDB() {
-        if (!DBHandler.getInstance().existsURL(URL)) {
+        if (!DBHandler.getInstance().existsURL(url)) {
             try {
                 this.text = fetch();
-                if(this.text != null)
+                if (this.text != null)
                     DBHandler.getInstance().addNews(this);
-            } catch (IOException E) {
-
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             return true;
         }
@@ -39,9 +41,9 @@ public class News {
     }
 
     private String fetch() throws IOException {
-            Document doc = Jsoup.connect(URL).get();
+            Document doc = Jsoup.connect(url).get();
 
-            Elements divs = doc.select(site.getTag() + "[" +site.getAttribute() + "]");
+            Elements divs = doc.select(site.getTag() + "[" + site.getAttribute() + "]");
             for (Element div : divs) {
                 if (div.attr(site.getAttribute()).contains(site.getAttributeValue()))
                     return div.text();
@@ -61,8 +63,8 @@ public class News {
         return date;
     }
 
-    public String getURL() {
-        return URL;
+    public String getUrl() {
+        return url;
     }
 
     public String getText() {

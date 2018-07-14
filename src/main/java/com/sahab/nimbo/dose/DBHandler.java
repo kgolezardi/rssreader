@@ -88,7 +88,7 @@ public class DBHandler {
         try {
             String sql = "INSERT INTO News (url, text, title, date) " +
                     "VALUES ('" +
-                    news.getURL() + "', '" +
+                    news.getUrl() + "', '" +
                     news.getText() + "', '" +
                     news.getTitle() + "', '" +
                     news.getDate() + "')";
