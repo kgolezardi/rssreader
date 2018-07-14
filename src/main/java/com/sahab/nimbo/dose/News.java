@@ -22,14 +22,20 @@ public class News {
         this.date = message.getPubDate();
         this.description = message.getDescription();
         this.title = message.getTitle();
+    }
 
-        if(DBHandler.getInstance().existsURL(message.getLink())){
+    boolean addToDB() {
+        if (!DBHandler.getInstance().existsURL(URL)) {
             try {
-                text = fetch();
-                if(text != null)
+                this.text = fetch();
+                if(this.text != null)
                     DBHandler.getInstance().addNews(this);
-            } catch(IOException E){}
+            } catch (IOException E) {
+
+            }
+            return true;
         }
+        return false;
     }
 
     private String fetch() throws IOException {

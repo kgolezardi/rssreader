@@ -6,6 +6,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in) ;
         int command = scanner.nextInt();
+        Main m = new Main();
         switch (command){
             case 1:
                 String address = scanner.next();
@@ -14,15 +15,16 @@ public class Main {
                 String attribute = scanner.next();
                 String attributeValue = scanner.next();
                 Site site = new Site(address, feedURL, tag, attribute, attributeValue);
-                Add(site);
+                DBHandler.getInstance().addSite(site);
                 break;
             case 2:
-                for(Site site: DBHandler.getInstance().allSites())
-                    site.FEU();
+                m.fetchAllNews();
+                break;
         }
     }
 
-    private void Add(Site site){
-
+    public void fetchAllNews(){
+        for(Site site: DBHandler.getInstance().allSites())
+            site.FEU();
     }
 }
