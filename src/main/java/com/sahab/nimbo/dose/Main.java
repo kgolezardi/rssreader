@@ -3,7 +3,7 @@ package com.sahab.nimbo.dose;
 import java.util.Scanner;
 
 public class Main {
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in) ;
         int command = scanner.nextInt();
         switch (command){
@@ -17,11 +17,12 @@ public class Main {
                 Add(site);
                 break;
             case 2:
-                for(Site site: DBHandler.getInstance().getAllSites())
+                for(Site site: DBHandler.getInstance().allSites())
+                    site.FEU();
         }
     }
 
     private void Add(Site site){
 
-    }*/
+    }
 }
