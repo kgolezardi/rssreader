@@ -5,16 +5,21 @@ package com.sahab.nimbo.dose.rss;
  */
 public class FeedMessage {
 
+    String pubDate;
     String title;
     String description;
     String link;
     String author;
     String guid;
 
+
     public String getTitle() {
         return title;
     }
 
+    public void setPubDate(String pubDate) { this.pubDate = pubDate; }
+
+    public String getPubDate() { return pubDate; }
     public void setTitle(String title) {
         this.title = title;
     }
@@ -55,7 +60,7 @@ public class FeedMessage {
     public String toString() {
         return "FeedMessage [title=" + title + ", description=" + description
                 + ", link=" + link + ", author=" + author + ", guid=" + guid
-                + "]";
+                + ", pubDate=" + pubDate + "]";
     }
 
 }
