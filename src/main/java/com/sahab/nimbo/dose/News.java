@@ -23,7 +23,7 @@ public class News {
         this.description = message.getDescription();
         this.title = message.getTitle();
 
-        if(DBHandler.getInstance().checkURLExists(message.getLink())){
+        if(DBHandler.getInstance().existsURL(message.getLink())){
             try {
                 text = fetch();
                 if(text != null)
@@ -57,5 +57,9 @@ public class News {
 
     public String getURL() {
         return URL;
+    }
+
+    public String getText() {
+        return text;
     }
 }

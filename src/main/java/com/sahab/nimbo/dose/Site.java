@@ -23,7 +23,7 @@ public class Site {
         }
     }
 
-    Site(String address, String feedUrl, String tag, String attribute, String attributeValue){
+    Site (String address, String feedUrl, String tag, String attribute, String attributeValue){
         this.address = address;
         this.feedUrl = feedUrl;
         this.tag = tag;
