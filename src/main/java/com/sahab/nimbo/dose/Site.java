@@ -19,7 +19,7 @@ public class Site {
 
     public void update(){
         for (FeedMessage message : feed.getMessages()) {
-            News news = new News(message, this);
+            News news = new News(message, this.address);
             news.addToDB();
         }
     }

@@ -3,7 +3,7 @@ package com.sahab.nimbo.dose;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public void getInput() {
         Scanner scanner = new Scanner(System.in) ;
         int command = scanner.nextInt();
         Main m = new Main();
@@ -21,6 +21,7 @@ public class Main {
                 m.fetchAllNews();
                 break;
         }
+        getInput();
     }
 
     public void fetchAllNews() {
