@@ -10,41 +10,43 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 public class ConfigCreator {
+    private static ConfigCreator ourInstance = new ConfigCreator();
 
-    private static List<SiteConfig> createConfigs() throws IOException{
-        try(Reader reader = new InputStreamReader(ConfigCreator.class.getResourceAsStream("/sites.json"), "UTF-8")){
+    public static ConfigCreator getInstance() {
+        return ourInstance;
+    }
+
+    private ConfigCreator() {
+    }
+
+    public List<SiteConfig> createConfigs() throws IOException {
+        try (Reader reader =
+                    new InputStreamReader(ConfigCreator.class.getResourceAsStream("/sites.json"),
+                            "UTF-8")) {
             Gson gson = new GsonBuilder().create();
-            TypeToken<List<SiteConfig>> token = new TypeToken<List<SiteConfig>>() {};
+            TypeToken<List<SiteConfig>> token = new TypeToken<List<SiteConfig>>() {}; // TODO: WTF?
             List<SiteConfig> Configs = gson.fromJson(reader, token.getType());
             return Configs;
         }
     }
 
-    private static boolean matches(String url, String RSS){
-        if(url.contains("//"))
+    public boolean matches(String url, String RSS){
+        if (url.contains("//"))
             url = url.substring(url.indexOf("//") + 2);
-        if(url.startsWith("www."))
+        if (url.startsWith("www."))
             url = url.substring(4);
-        if(url.contains("/"))
+        if (url.contains("/"))
             url = url.substring(0, url.indexOf('/'));
-        if(RSS.contains(url)){
+        if (RSS.contains(url))
             return true;
-        }
         return false;
     }
 
-    private static SiteConfig find_config(String url, List<SiteConfig> siteConfigs){
-        for(SiteConfig siteConfig: siteConfigs){
-            if(matches(url, siteConfig.getLink()))
+    public SiteConfig find_config(String url, List<SiteConfig> siteConfigs) {
+        for (SiteConfig siteConfig: siteConfigs) {
+            if (matches(url, siteConfig.getLink()))
                 return siteConfig;
         }
         return null;
-    }
-
-    public static void main(String[] args) throws IOException {
-        String url = "http://www.varzesh3.com/news/1537417/بارسلونا-و-شروع-تمرینات-پیش-فصل-با-چهارده-بازیکن";
-        List<SiteConfig> Configs = createConfigs();
-        SiteConfig siteConfig = find_config(url, Configs);
-        System.out.println(NewsFetcher.fetch(url, siteConfig));
     }
 }
