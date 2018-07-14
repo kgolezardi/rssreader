@@ -14,14 +14,20 @@ public class Main {
                 String attribute = scanner.next();
                 String attributeValue = scanner.next();
                 Site site = new Site(address, feedURL, tag, attribute, attributeValue);
-                Add(site);
+                add(site);
                 break;
             case 2:
-                for(Site site: DBHandler.getInstance().getAllSites())
+                fetchAllNews();
+                break;
         }
     }
 
-    private void Add(Site site){
+    public void fetchAllNews(){
+        for(Site site: DBHandler.getInstance().getAllSites())
+            site.FEU();
+    }
 
+    private void add(Site site){
+        DBHandler.addSite(site);
     }
 }

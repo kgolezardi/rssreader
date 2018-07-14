@@ -19,7 +19,8 @@ public class Site {
 
     public void FEU(){
         for (FeedMessage message: feed.getMessages()) {
-            new News(message, this);
+            News news = new News(message, this);
+            news.addToDB();
         }
     }
 
@@ -30,7 +31,7 @@ public class Site {
         this.attribute = attribute;
         this.attributeValue = attributeValue;
         RSSFeedParser parser = new RSSFeedParser(feedUrl);
-        Feed feed = parser.readFeed();
+        this.feed = parser.readFeed();
     }
 
     public String getAttributeValue() {
