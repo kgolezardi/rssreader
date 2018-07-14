@@ -23,6 +23,7 @@ public class DBHandler {
     static final private String USER = "root";
     static final private String PASS = "";
     // TODO: use this values as properties
+    // TODO: prepared statements
 
     private Connection conn = null;
     private Statement stmt = null;
@@ -38,8 +39,9 @@ public class DBHandler {
 
     public boolean addSite(Site site) {
         try {
-            String sql = "INSERT INTO Sites (link, tag, attribute, attributeValue) " +
+            String sql = "INSERT INTO Sites (name, link, tag, attribute, attributeValue) " +
                     "VALUES ('" +
+                    site.getAddress() + "', '" +
                     site.getFeedUrl() + "', '" +
                     site.getTag() + "', '" +
                     site.getAttribute() + "', '" +
@@ -55,15 +57,16 @@ public class DBHandler {
     public List<Site> allSites() {
         List<Site> sites = new ArrayList<Site>();
         try {
-            String sql = "SELECT link, tag, attribute, attributeValue FROM Sites";
+            String sql = "SELECT name, link, tag, attribute, attributeValue FROM Sites";
             ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
+                String name = rs.getString("name");
                 String link = rs.getString("link");
                 String tag = rs.getString("tag");
                 String attribute = rs.getString("attribute");
                 String attributeValue = rs.getString("attributeValue");
-                sites.add(new Site("", link, tag, attribute, attributeValue));
+                sites.add(new Site(name, link, tag, attribute, attributeValue));
             }
         } catch (SQLException se) {
             se.printStackTrace();
@@ -98,6 +101,26 @@ public class DBHandler {
             return false;
         }
         return true;
+    }
+
+    public Site getSite(String name) {
+        try {
+            String sql = "SELECT name, link, tag, attribute, attributeValue FROM Sites " +
+                    "WHERE name='" + name + "'";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            if (rs.next()) {
+                String link = rs.getString("link");
+                String tag = rs.getString("tag");
+                String attribute = rs.getString("attribute");
+                String attributeValue = rs.getString("attributeValue");
+                return new Site(name, link, tag, attribute, attributeValue);
+            }
+
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+        return null;
     }
 
 }
