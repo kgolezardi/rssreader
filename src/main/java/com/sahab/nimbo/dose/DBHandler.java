@@ -18,7 +18,7 @@ public class DBHandler {
 
     static final private String DB_URL = "jdbc:mysql://localhost/NewsReader" +
             "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&" +
-            "autoReconnect=true&useSSL=false";
+            "autoReconnect=true&useSSL=false&characterEncoding=UTF-8";
 
     static final private String USER = "root";
     static final private String PASS = "";
@@ -89,12 +89,13 @@ public class DBHandler {
 
     public boolean addNews(News news) {
         try {
-            String sql = "INSERT INTO News (url, text, title, date) " +
+            String sql = "INSERT INTO News (url, text, title, date, siteName) " +
                     "VALUES ('" +
                     news.getUrl() + "', '" +
                     news.getText() + "', '" +
                     news.getTitle() + "', '" +
-                    news.getDate() + "')";
+                    news.getDate() + "', '" +
+                    news.getSiteName() + "')";
             stmt.executeUpdate(sql);
         } catch (SQLException se) {
             se.printStackTrace();
@@ -103,7 +104,7 @@ public class DBHandler {
         return true;
     }
 
-    public Site getSite(String name) {
+    public Site getSite(String name)  {
         try {
             String sql = "SELECT name, link, tag, attribute, attributeValue FROM Sites " +
                     "WHERE name='" + name + "'";
@@ -123,4 +124,28 @@ public class DBHandler {
         return null;
     }
 
+    public List<News> searchNews(String title, String text) {
+        return null;
+    }
+
+    public List<News> getNewsBySite(String siteName, int limit) {
+        List<News> news = new ArrayList<News>();
+        try {
+            String sql = "SELECT url, text, title, date FROM News " +
+                    "WHERE siteName='" + siteName + "' " +
+                    "ORDER BY date LIMIT " + limit;
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                String url = rs.getString("url");
+                String text = rs.getString("text");
+                String title = rs.getString("title");
+                String date = rs.getString("date");
+                news.add(new News(url, title, text, date, siteName));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+        return news;
+    }
 }

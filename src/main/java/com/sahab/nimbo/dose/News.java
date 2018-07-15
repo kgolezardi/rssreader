@@ -12,28 +12,28 @@ public class News {
     private String date; // TODO: java date
     private String title;
     private String url;
-    private String link;
+    private String siteName;
     private String description;
     private String text;
 
-    public News(FeedMessage message, String link) {
-        this.link = link;
+    public News(FeedMessage message, String siteName) {
+        this.siteName = siteName;
         this.url = message.getLink();
         this.date = message.getPubDate();
         this.description = message.getDescription();
         this.title = message.getTitle();
     }
 
-    public News(String url, String title, String text, String date, String link){
+    public News(String url, String title, String text, String date, String siteName){
         this.url = url;
         this.title = title;
         this.text = text;
         this.date = date;
-        this.link = link;
+        this.siteName = siteName;
 
     }
 
-    boolean addToDB() {
+    public boolean addToDb() {
         if (!DBHandler.getInstance().existsURL(url)) {
             try {
                 this.text = fetch();
@@ -49,7 +49,7 @@ public class News {
 
     private String fetch() throws IOException {
             Document doc = Jsoup.connect(url).get();
-            Site site = DBHandler.getInstance().getSite(link);
+            Site site = DBHandler.getInstance().getSite(siteName);
 
             Elements divs = doc.select(site.getTag() + "[" + site.getAttribute() + "]");
             for (Element div : divs) {
@@ -78,4 +78,9 @@ public class News {
     public String getText() {
         return text;
     }
+
+    public String getSiteName() {
+        return siteName;
+    }
+
 }
