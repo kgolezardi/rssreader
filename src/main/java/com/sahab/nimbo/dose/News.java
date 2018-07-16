@@ -66,7 +66,7 @@ public class News {
     }
 
     public synchronized boolean addToDb() {
-        if (!DBHandler.getInstance().existsURL(url)) {
+        if (!DBHandler.getInstance().existsUrl(url)) {
             try {
                 this.text = fetch();
                 if (this.text != null)

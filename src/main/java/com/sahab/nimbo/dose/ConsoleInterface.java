@@ -1,5 +1,7 @@
 package com.sahab.nimbo.dose;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,6 +15,28 @@ public class ConsoleInterface implements Runnable {
 
     static ConsoleInterface getInstance() {
         return ourInstance;
+    }
+
+    private void printNews(List<News> allNews) {
+        int num = 0;
+        for (News news : allNews) {
+            num++;
+            System.out.println("#" + num + "          ***");
+
+            System.out.print("Title: ");
+            System.out.println(news.getTitle());
+
+            System.out.print("Date: ");
+            System.out.println(news.getDate());
+
+            System.out.print("Text: ");
+            System.out.println(news.getText());
+
+            System.out.print("URL: ");
+            System.out.println(news.getUrl());
+
+            System.out.println();
+        }
     }
 
     @Override
@@ -51,7 +75,15 @@ public class ConsoleInterface implements Runnable {
                     String textCon = scanner.nextLine();
 
                     List<News> allNews = DBHandler.getInstance().searchNews(titleCon, textCon);
+                    printNews(allNews);
 
+                    break;
+
+                case "last ten":
+                    System.out.print("Site name/address: ");
+                    String siteName = scanner.nextLine();
+
+                    allNews = DBHandler.getInstance().getNewsBySite(siteName, 10);
                     int num = 0;
                     for (News news : allNews) {
                         num++;
@@ -66,35 +98,33 @@ public class ConsoleInterface implements Runnable {
                         System.out.print("Text: ");
                         System.out.println(news.getText());
 
-                        System.out.print("URL: ");
-                        System.out.println(news.getUrl());
-
                         System.out.println();
                     }
 
                     break;
 
-                case "last ten":
+                case "count today":
                     System.out.print("Site name/address: ");
-                    String siteName = scanner.nextLine();
+                    siteName = scanner.nextLine();
 
-                    allNews = DBHandler.getInstance().getNewsBySite(siteName, 10);
-                    num = 0;
-                    for (News news : allNews) {
-                        num++;
-                        System.out.println("#" + num + "          ***");
+                    allNews = DBHandler.getInstance().getNewsBySiteDate(siteName, new Date());
+                    System.out.println(allNews.size());
 
-                        System.out.print("Title: ");
-                        System.out.println(news.getTitle());
+                    break;
 
-                        System.out.print("Date: ");
-                        System.out.println(news.getDate());
+                case "count":
+                    System.out.print("Site name/address: ");
+                    siteName = scanner.nextLine();
 
-                        System.out.print("Text: ");
-                        System.out.println(news.getText());
+                    System.out.print("Day Month Year: ");
+                    int day = scanner.nextInt();
+                    int month = scanner.nextInt();
+                    int year = scanner.nextInt();
+                    scanner.nextLine();
 
-                        System.out.println();
-                    }
+                    allNews = DBHandler.getInstance().getNewsBySiteDate(siteName,
+                            new GregorianCalendar(year, month - 1, day + 1).getTime());
+                    System.out.println(allNews.size());
 
                     break;
 

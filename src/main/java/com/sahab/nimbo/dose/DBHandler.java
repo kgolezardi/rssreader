@@ -2,16 +2,17 @@ package com.sahab.nimbo.dose;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DBHandler {
     static final private String SQL_URL = "jdbc:mysql://localhost/" +
             "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&" +
-            "autoReconnect=true&useSSL=false&characterEncoding=UTF-8";
+            "autoReconnect=true&useSSL=false&characterEncoding=UTF-8&character_set_server=utf8mb4";
 
     static final private String DB_URL = "jdbc:mysql://localhost/NewsReader" +
             "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&" +
-            "autoReconnect=true&useSSL=false&characterEncoding=UTF-8";
+            "autoReconnect=true&useSSL=false&characterEncoding=UTF-8&character_set_server=utf8mb4";
 
     static final private String USER = "root";
     static final private String PASS = "";
@@ -20,6 +21,10 @@ public class DBHandler {
 
     private Connection conn = null;
     // TODO: connection pool
+    // TODO: hash primary key
+    // TODO: command line interface
+    // TODO: unit tests
+    // TODO: date patterns
 
     private DBHandler() {
         try {
@@ -68,7 +73,7 @@ public class DBHandler {
                     "  `url` varchar(200) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
                     "  `text` text COLLATE utf8mb4_persian_ci,\n" +
                     "  `title` varchar(300) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
-                    "  `date` datetime NOT NULL,\n" +
+                    "  `pubTime` datetime NOT NULL,\n" +
                     "  `siteName` varchar(50) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
                     "  PRIMARY KEY (`url`),\n" +
                     "  UNIQUE KEY `url_UNIQUE` (`url`),\n" +
@@ -123,7 +128,7 @@ public class DBHandler {
         return sites;
     }
 
-    public boolean existsURL(String url) {
+    public boolean existsUrl(String url) {
         String sql = "SELECT url FROM News WHERE url=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, url);
@@ -137,7 +142,7 @@ public class DBHandler {
     }
 
     public boolean addNews(News news) {
-        String sql = "INSERT INTO News (url, text, title, date, siteName) " +
+        String sql = "INSERT INTO News (url, text, title, pubTime, siteName) " +
                 "VALUES (?, ?, ?, ?, ?);";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -186,7 +191,7 @@ public class DBHandler {
 
     public List<News> searchNews(String titleCon, String textCon) {
         List<News> news = new ArrayList<>();
-        String sql = "SELECT url, text, title, date, siteName FROM News " +
+        String sql = "SELECT url, text, title, pubTime, siteName FROM News " +
                 "WHERE title LIKE ? ESCAPE '!'" +
                 "AND text LIKE ? ESCAPE '!'";
         titleCon = "%" + escapeLikeString(titleCon) + "%";
@@ -201,7 +206,7 @@ public class DBHandler {
                 String url = rs.getString("url");
                 String text = rs.getString("text");
                 String title = rs.getString("title");
-                java.util.Date date = rs.getTimestamp("date");
+                java.util.Date date = rs.getTimestamp("pubTime");
                 String siteName = rs.getString("siteName");
                 news.add(new News(url, title, text, date, siteName));
             }
@@ -213,7 +218,7 @@ public class DBHandler {
 
     public List<News> getNewsBySite(String siteName, int limit) {
         List<News> news = new ArrayList<>();
-        String sql = "SELECT url, text, title, date FROM News " +
+        String sql = "SELECT url, text, title, pubTime FROM News " +
                 "WHERE siteName=? ORDER BY date DESC LIMIT ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, siteName);
@@ -225,7 +230,32 @@ public class DBHandler {
                 String url = rs.getString("url");
                 String text = rs.getString("text");
                 String title = rs.getString("title");
-                java.util.Date date = rs.getTimestamp("date");
+                java.util.Date date = rs.getTimestamp("pubTime");
+                news.add(new News(url, title, text, date, siteName));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+        return news;
+    }
+
+    public List<News> getNewsBySiteDate(String siteName, Date time) {
+        List<News> news = new ArrayList<>();
+        java.sql.Date sqlDate = new java.sql.Date(time.getTime());
+        String sql = "SELECT url, text, title, pubTime FROM News " +
+                "WHERE siteName=? AND DATE(pubTime)=?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, siteName);
+            stmt.setDate(2, sqlDate);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String url = rs.getString("url");
+                String text = rs.getString("text");
+                String title = rs.getString("title");
+                java.util.Date date = rs.getTimestamp("pubTime");
                 news.add(new News(url, title, text, date, siteName));
             }
         } catch (SQLException se) {
