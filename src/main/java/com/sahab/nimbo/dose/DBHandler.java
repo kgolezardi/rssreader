@@ -23,6 +23,8 @@ public class DBHandler {
 
     private Connection conn = null;
 
+
+
     private DBHandler() {
         try {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -113,7 +115,7 @@ public class DBHandler {
             stmt.setString(1, news.getUrl());
             stmt.setString(2, news.getText());
             stmt.setString(3, news.getTitle());
-            stmt.setString(4, news.getDate());
+            stmt.setTimestamp(4, new java.sql.Timestamp(news.getDate().getTime()));
             stmt.setString(5, news.getSiteName());
             stmt.executeUpdate();
 
@@ -164,7 +166,7 @@ public class DBHandler {
                 String url = rs.getString("url");
                 String text = rs.getString("text");
                 String title = rs.getString("title");
-                String date = rs.getString("date");
+                java.util.Date date = rs.getTimestamp("date");
                 String siteName = rs.getString("siteName");
                 news.add(new News(url, title, text, date, siteName));
             }
@@ -190,7 +192,7 @@ public class DBHandler {
                 String url = rs.getString("url");
                 String text = rs.getString("text");
                 String title = rs.getString("title");
-                String date = rs.getString("date");
+                java.util.Date date = rs.getTimestamp("date");
                 news.add(new News(url, title, text, date, siteName));
             }
         } catch (SQLException se) {

@@ -17,7 +17,7 @@ public class ConsoleInterface implements Runnable {
 
     @Override
     public void run() {
-        // TODO: Ask
+        // TODO: Determine when to exit
         while (true) {
             System.out.print("Command: ");
             String command = scanner.nextLine();
@@ -68,6 +68,8 @@ public class ConsoleInterface implements Runnable {
 
                         System.out.print("URL: ");
                         System.out.println(news.getUrl());
+
+                        System.out.println();
                     }
 
                     break;
@@ -90,12 +92,15 @@ public class ConsoleInterface implements Runnable {
 
                         System.out.print("Text: ");
                         System.out.println(news.getText());
+
+                        System.out.println();
                     }
 
                     break;
 
                 case "exit":
                     System.exit(0);
+                    // TODO: Shutdown the executor
                     break;
 
                 default:
