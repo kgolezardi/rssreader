@@ -1,16 +1,13 @@
 package com.sahab.nimbo.dose;
 
 import java.sql.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class DBHandler {
-    private static DBHandler ourInstance = new DBHandler();
-
-    static DBHandler getInstance() {
-        return ourInstance;
-    }
+    static final private String SQL_URL = "jdbc:mysql://localhost/" +
+            "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&" +
+            "autoReconnect=true&useSSL=false&characterEncoding=UTF-8";
 
     static final private String DB_URL = "jdbc:mysql://localhost/NewsReader" +
             "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&" +
@@ -18,17 +15,72 @@ public class DBHandler {
 
     static final private String USER = "root";
     static final private String PASS = "";
-    // TODO: use this values as properties
-    // TODO: prepared statements
+
+    private static DBHandler ourInstance = new DBHandler();
 
     private Connection conn = null;
-
-
+    // TODO: prepared statements
+    // TODO: try with resources
 
     private DBHandler() {
         try {
+            getConifgs();
+            initDatabase();
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            initTables();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    static DBHandler getInstance() {
+        return ourInstance;
+    }
+
+    private void getConifgs() {
+        // TODO: get properties
+    }
+
+    private void initDatabase() {
+        try (Connection tempConn = DriverManager.getConnection(SQL_URL, USER, PASS);
+             Statement stmt = tempConn.createStatement()) {
+            String sql = "CREATE DATABASE IF NOT EXISTS `NewsReader` " +
+                    "/*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci */;\n";
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initTables() {
+        try (Statement stmt = conn.createStatement()) {
+            String createSite = "CREATE TABLE IF NOT EXISTS `Sites` (\n" +
+                    "  `name` varchar(45) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
+                    "  `link` varchar(200) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
+                    "  `tag` varchar(50) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
+                    "  `attribute` varchar(50) COLLATE utf8mb4_persian_ci DEFAULT NULL,\n" +
+                    "  `attributeValue` varchar(50) COLLATE utf8mb4_persian_ci DEFAULT NULL,\n" +
+                    "  PRIMARY KEY (`name`),\n" +
+                    "  UNIQUE KEY `link_UNIQUE` (`link`),\n" +
+                    "  UNIQUE KEY `name_UNIQUE` (`name`)\n" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_persian_ci;\n";
+
+            String createNews = "CREATE TABLE IF NOT EXISTS `News` (\n" +
+                    "  `url` varchar(200) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
+                    "  `text` text COLLATE utf8mb4_persian_ci,\n" +
+                    "  `title` varchar(300) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
+                    "  `date` datetime NOT NULL,\n" +
+                    "  `siteName` varchar(50) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
+                    "  PRIMARY KEY (`url`),\n" +
+                    "  UNIQUE KEY `url_UNIQUE` (`url`),\n" +
+                    "  KEY `siteName_idx` (`siteName`),\n" +
+                    "  CONSTRAINT `siteName` FOREIGN KEY (`siteName`) REFERENCES `Sites` (`name`) " +
+                    "      ON DELETE CASCADE ON UPDATE CASCADE\n" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_persian_ci;\n";
+
+            stmt.executeUpdate(createSite);
+            stmt.executeUpdate(createNews);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -128,7 +180,7 @@ public class DBHandler {
         return true;
     }
 
-    public Site getSite(String name)  {
+    public Site getSite(String name) {
         Statement stmt = null;
         try {
             stmt = conn.createStatement();
