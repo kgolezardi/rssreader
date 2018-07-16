@@ -27,7 +27,8 @@ public class News {
 //    private
     private Date parseDate(String date){
         String format1 = "MMMM dd, YYYY, hh:mm a";
-        String format2 = "EEE, ";
+        String format2 = "EEE, dd MMM yyyy HH:mm:ss zzz";
+        String format3 = "EEE, dd MMM yyyy HH:mm:ss Z";
 
         Date util_sdate = null;
 
@@ -35,8 +36,21 @@ public class News {
             SimpleDateFormat sdf = new SimpleDateFormat(format1);
             sdf.setLenient(false);
             util_sdate = sdf.parse(date);
-        } catch (ParseException pe) {
-            pe.printStackTrace();
+        } catch (ParseException pe1) {
+            try{
+                SimpleDateFormat sdf = new SimpleDateFormat(format2);
+                sdf.setLenient(false);
+                util_sdate = sdf.parse(date);
+            }
+            catch (ParseException pe2) {
+                try{
+                    SimpleDateFormat sdf = new SimpleDateFormat(format3);
+                    sdf.setLenient(false);
+                    util_sdate = sdf.parse(date);
+                } catch (ParseException pe3) {
+                    pe3.printStackTrace();
+                }
+            }
         }
 
         return util_sdate;
