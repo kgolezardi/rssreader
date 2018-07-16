@@ -14,7 +14,7 @@ import javax.xml.stream.events.XMLEvent;
 import com.sahab.nimbo.dose.rss.Feed;
 import com.sahab.nimbo.dose.rss.FeedMessage;
 
-public class RSSFeedParser {
+public class RssFeedParser {
     static final String TITLE = "title";
     static final String DESCRIPTION = "description";
     static final String CHANNEL = "channel";
@@ -28,7 +28,7 @@ public class RSSFeedParser {
 
     final URL url;
 
-    public RSSFeedParser(String feedUrl) {
+    public RssFeedParser(String feedUrl) {
         try {
             this.url = new URL(feedUrl);
         } catch (MalformedURLException e) {

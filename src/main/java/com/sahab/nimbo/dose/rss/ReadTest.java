@@ -2,13 +2,12 @@ package com.sahab.nimbo.dose.rss;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
 public class ReadTest {
     public static void main(String[] args) throws IOException {
-                RSSFeedParser parser = new RSSFeedParser(
+                RssFeedParser parser = new RssFeedParser(
                 "https://www.isna.ir/rss");
         Feed feed = parser.readFeed();
         System.out.println(feed);

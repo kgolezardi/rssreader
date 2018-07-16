@@ -2,7 +2,7 @@ package com.sahab.nimbo.dose;
 
 import com.sahab.nimbo.dose.rss.Feed;
 import com.sahab.nimbo.dose.rss.FeedMessage;
-import com.sahab.nimbo.dose.rss.RSSFeedParser;
+import com.sahab.nimbo.dose.rss.RssFeedParser;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -34,7 +34,7 @@ class SiteUpdater implements Runnable {
 
     @Override
     public void run() {
-        RSSFeedParser parser = new RSSFeedParser(site.getFeedUrl());
+        RssFeedParser parser = new RssFeedParser(site.getFeedUrl());
         Feed feed = parser.readFeed();
         for (FeedMessage message : feed.getMessages()) {
             News news = new News(message, site.getAddress());
