@@ -52,7 +52,7 @@ public class News {
 
     }
 
-    public boolean addToDb() {
+    public synchronized boolean addToDb() {
         if (!DBHandler.getInstance().existsURL(url)) {
             try {
                 this.text = fetch();
