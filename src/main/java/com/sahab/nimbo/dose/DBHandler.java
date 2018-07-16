@@ -20,7 +20,6 @@ public class DBHandler {
 
     private Connection conn = null;
     // TODO: prepared statements
-    // TODO: try with resources
 
     private DBHandler() {
         try {
@@ -28,7 +27,7 @@ public class DBHandler {
             initDatabase();
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             initTables();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -85,19 +84,8 @@ public class DBHandler {
         }
     }
 
-    private void closeStatement(Statement stmt) {
-        try {
-            if (stmt != null)
-                stmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public boolean addSite(Site site) {
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement()) {
             String sql = "INSERT INTO Sites (name, link, tag, attribute, attributeValue) " +
                     "VALUES ('" +
                     site.getAddress() + "', '" +
@@ -109,17 +97,13 @@ public class DBHandler {
         } catch (SQLException se) {
             se.printStackTrace();
             return false;
-        } finally {
-            closeStatement(stmt);
         }
         return true;
     }
 
     public List<Site> allSites() {
         List<Site> sites = new ArrayList<Site>();
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement()) {
             String sql = "SELECT name, link, tag, attribute, attributeValue FROM Sites";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -133,16 +117,12 @@ public class DBHandler {
             }
         } catch (SQLException se) {
             se.printStackTrace();
-        } finally {
-            closeStatement(stmt);
         }
         return sites;
     }
 
     public boolean existsURL(String url) {
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement()) {
             String sql = "SELECT url FROM News WHERE url='" + url + "'";
 
             ResultSet rs = stmt.executeQuery(sql);
@@ -150,20 +130,15 @@ public class DBHandler {
                 return true;
         } catch (SQLException se) {
             se.printStackTrace();
-        } finally {
-            closeStatement(stmt);
         }
         return false;
     }
 
     public boolean addNews(News news) {
-        PreparedStatement stmt = null;
-        try {
-            String sql = "INSERT INTO News (url, text, title, date, siteName) " +
-                    "VALUES (?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO News (url, text, title, date, siteName) " +
+                "VALUES (?, ?, ?, ?, ?);";
 
-            stmt = conn.prepareStatement(sql);
-
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, news.getUrl());
             stmt.setString(2, news.getText());
             stmt.setString(3, news.getTitle());
@@ -174,16 +149,12 @@ public class DBHandler {
         } catch (SQLException se) {
             se.printStackTrace();
             return false;
-        } finally {
-            closeStatement(stmt);
         }
         return true;
     }
 
     public Site getSite(String name) {
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement()) {
             String sql = "SELECT name, link, tag, attribute, attributeValue FROM Sites " +
                     "WHERE name='" + name + "'";
             ResultSet rs = stmt.executeQuery(sql);
@@ -198,17 +169,13 @@ public class DBHandler {
 
         } catch (SQLException se) {
             se.printStackTrace();
-        } finally {
-            closeStatement(stmt);
         }
         return null;
     }
 
     public List<News> searchNews(String titleCon, String textCon) {
         List<News> news = new ArrayList<>();
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement()) {
             String sql = "SELECT url, text, title, date, siteName FROM News " +
                     "WHERE title LIKE '%" + titleCon + "%' " +
                     "AND text LIKE '%" + textCon + "%'";
@@ -224,17 +191,13 @@ public class DBHandler {
             }
         } catch (SQLException se) {
             se.printStackTrace();
-        } finally {
-            closeStatement(stmt);
         }
         return news;
     }
 
     public List<News> getNewsBySite(String siteName, int limit) {
         List<News> news = new ArrayList<>();
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement()) {
             String sql = "SELECT url, text, title, date FROM News " +
                     "WHERE siteName='" + siteName + "' " +
                     "ORDER BY date DESC LIMIT " + limit;
@@ -249,8 +212,6 @@ public class DBHandler {
             }
         } catch (SQLException se) {
             se.printStackTrace();
-        } finally {
-            closeStatement(stmt);
         }
         return news;
     }
