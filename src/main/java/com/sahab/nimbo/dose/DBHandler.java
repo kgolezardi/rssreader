@@ -1,10 +1,6 @@
 package com.sahab.nimbo.dose;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,17 +103,20 @@ public class DBHandler {
     }
 
     public boolean addNews(News news) {
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         try {
-            stmt = conn.createStatement();
             String sql = "INSERT INTO News (url, text, title, date, siteName) " +
-                    "VALUES ('" +
-                    news.getUrl() + "', '" +
-                    news.getText() + "', '" +
-                    news.getTitle() + "', '" +
-                    news.getDate() + "', '" +
-                    news.getSiteName() + "')";
-            stmt.executeUpdate(sql);
+                    "VALUES (?, ?, ?, ?, ?);";
+
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, news.getUrl());
+            stmt.setString(2, news.getText());
+            stmt.setString(3, news.getTitle());
+            stmt.setString(4, news.getDate());
+            stmt.setString(5, news.getSiteName());
+            stmt.executeUpdate();
+
         } catch (SQLException se) {
             se.printStackTrace();
             return false;
@@ -157,8 +156,8 @@ public class DBHandler {
         try {
             stmt = conn.createStatement();
             String sql = "SELECT url, text, title, date, siteName FROM News " +
-                    "WHERE title LIKE '%" + titleCon + "' " +
-                    "AND text LIKE '%" + textCon + "'";
+                    "WHERE title LIKE '%" + titleCon + "%' " +
+                    "AND text LIKE '%" + textCon + "%'";
             ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
