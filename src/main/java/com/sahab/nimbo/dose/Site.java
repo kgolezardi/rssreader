@@ -16,15 +16,6 @@ public class Site {
         return tag;
     }
 
-    public void update() {
-        RSSFeedParser parser = new RSSFeedParser(feedUrl);
-        Feed feed = parser.readFeed();
-        for (FeedMessage message : feed.getMessages()) {
-            News news = new News(message, this.address);
-            news.addToDb();
-        }
-    }
-
     public Site (String address, String feedUrl, String tag, String attribute, String attributeValue){
         this.address = address;
         this.feedUrl = feedUrl;
