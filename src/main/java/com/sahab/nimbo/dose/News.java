@@ -17,15 +17,15 @@ public class News {
     private Date date;// TODO: java date
     private String title;
     private String url;
-    private String link;
+    private String siteName;
     private String text;
 
-    public News(FeedMessage message, String link) {
-        this(message.getLink(), message.getTitle(), null, message.getPubDate(), link);
+    public News(FeedMessage message, String siteName) {
+        this(message.getLink(), message.getTitle(), null, message.getPubDate(), siteName);
     }
 
 //    private
-    Date parseDate(String date){
+    private Date parseDate(String date){
         String format1 = "MMMM dd, YYYY, hh:mm a";
         String format2 = "EEE, ";
 
@@ -42,17 +42,17 @@ public class News {
         return util_sdate;
     }
 
-    public News(String url, String title, String text, String date, String link){
+    public News(String url, String title, String text, String date, String siteName){
         this.url = url;
         this.title = title;
         this.text = text;
         this.toBeParsedDate = date;
-        this.link = link;
+        this.siteName = siteName;
         this.date = parseDate(toBeParsedDate);
 
     }
 
-    boolean addToDB() {
+    public boolean addToDb() {
         if (!DBHandler.getInstance().existsURL(url)) {
             try {
                 this.text = fetch();
@@ -68,7 +68,7 @@ public class News {
 
     private String fetch() throws IOException {
             Document doc = Jsoup.connect(url).get();
-            Site site = DBHandler.getInstance().getSite(link);
+            Site site = DBHandler.getInstance().getSite(siteName);
 
             Elements divs = doc.select(site.getTag() + "[" + site.getAttribute() + "]");
             for (Element div : divs) {
@@ -93,4 +93,9 @@ public class News {
     public String getText() {
         return text;
     }
+
+    public String getSiteName() {
+        return siteName;
+    }
+
 }

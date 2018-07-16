@@ -6,7 +6,6 @@ import com.sahab.nimbo.dose.rss.RSSFeedParser;
 
 
 public class Site {
-    private Feed feed;
     private String address;
     private String feedUrl;
     private String tag;
@@ -17,10 +16,12 @@ public class Site {
         return tag;
     }
 
-    public void update(){
+    public void update() {
+        RSSFeedParser parser = new RSSFeedParser(feedUrl);
+        Feed feed = parser.readFeed();
         for (FeedMessage message : feed.getMessages()) {
             News news = new News(message, this.address);
-            news.addToDB();
+            news.addToDb();
         }
     }
 
@@ -30,8 +31,7 @@ public class Site {
         this.tag = tag;
         this.attribute = attribute;
         this.attributeValue = attributeValue;
-        RSSFeedParser parser = new RSSFeedParser(feedUrl);
-        this.feed = parser.readFeed();
+
     }
 
     public String getAttributeValue() {
@@ -48,5 +48,9 @@ public class Site {
 
     public String getAddress() {
         return address;
+    }
+
+    public void addToDb() {
+        DBHandler.getInstance().addSite(this);
     }
 }
