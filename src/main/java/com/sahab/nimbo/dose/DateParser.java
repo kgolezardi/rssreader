@@ -1,13 +1,19 @@
-package com.sahab.nimbo.dose.rss;
+package com.sahab.nimbo.dose;
+
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class DateParser {
-    List<String> formats = new ArrayList<>();
+    private List<String> formats = new ArrayList<>();
+    private static DateParser ourInstance = new DateParser();
+
+    public static DateParser getInstance() {
+        return ourInstance;
+    }
 
     private void getConifgs() {
         String resourceName = "dateParseFormat.properties";
@@ -19,11 +25,28 @@ public class DateParser {
             e.printStackTrace();
         }
 
-        SQL_URL = props.getProperty("sql_url") + "?" + props.getProperty("con_settings");
-        DB_URL = props.getProperty("sql_url") + props.getProperty("db_name") + "?" +
-                props.getProperty("con_settings");
-        USER = props.getProperty("user");
-        PASS = props.getProperty("pass");
+        formats = Arrays.asList(props.getProperty("formats").split("\",\""));
+    }
+
+    public Date parseDate(String date) {
+        ParseException parseException = null;
+        Date util_sdate;
+        boolean flag = false;
+
+        for(String format: formats){
+            try{
+                SimpleDateFormat sdf = new SimpleDateFormat(format);
+                sdf.setLenient(false);
+                util_sdate = sdf.parse(date);
+                return util_sdate;
+            } catch (ParseException pe){
+                parseException = pe;
+            }
+        }
+
+        parseException.printStackTrace();
+
+        return null;
     }
 
     private DateParser() {
