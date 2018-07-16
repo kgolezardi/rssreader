@@ -7,29 +7,48 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.sql.Struct;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class News {
-    private String date; // TODO: java date
+    private String toBeParsedDate;
+    private Date date;// TODO: java date
     private String title;
     private String url;
     private String link;
-    private String description;
     private String text;
 
     public News(FeedMessage message, String link) {
-        this.link = link;
-        this.url = message.getLink();
-        this.date = message.getPubDate();
-        this.description = message.getDescription();
-        this.title = message.getTitle();
+        this(message.getLink(), message.getTitle(), null, message.getPubDate(), link);
+    }
+
+//    private
+    Date parseDate(String date){
+        String format1 = "MMMM dd, YYYY, hh:mm a";
+        String format2 = "EEE, ";
+
+        Date util_sdate = null;
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(format1);
+            sdf.setLenient(false);
+            util_sdate = sdf.parse(date);
+        } catch (ParseException pe) {
+            pe.printStackTrace();
+        }
+
+        return util_sdate;
     }
 
     public News(String url, String title, String text, String date, String link){
         this.url = url;
         this.title = title;
         this.text = text;
-        this.date = date;
+        this.toBeParsedDate = date;
         this.link = link;
+        this.date = parseDate(toBeParsedDate);
 
     }
 
@@ -59,15 +78,11 @@ public class News {
             return null;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public String getTitle() {
         return title;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
