@@ -1,21 +1,20 @@
 package com.sahab.nimbo.dose;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 public class DBHandler {
-    static final private String SQL_URL = "jdbc:mysql://localhost/" +
-            "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&" +
-            "autoReconnect=true&useSSL=false&characterEncoding=UTF-8&character_set_server=utf8mb4";
+    private String SQL_URL;
 
-    static final private String DB_URL = "jdbc:mysql://localhost/NewsReader" +
-            "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&" +
-            "autoReconnect=true&useSSL=false&characterEncoding=UTF-8&character_set_server=utf8mb4";
+    private String DB_URL;
 
-    static final private String USER = "root";
-    static final private String PASS = "";
+    private String USER;
+    private String PASS;
 
     private static DBHandler ourInstance = new DBHandler();
 
@@ -27,8 +26,8 @@ public class DBHandler {
     // TODO: date patterns
 
     private DBHandler() {
+        getConifgs();
         try {
-            getConifgs();
             initDatabase();
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             initTables();
@@ -42,7 +41,20 @@ public class DBHandler {
     }
 
     private void getConifgs() {
-        // TODO: get properties
+        String resourceName = "db.properties";
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        Properties props = new Properties();
+        try (InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
+            props.load(resourceStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SQL_URL = props.getProperty("sql_url") + "?" + props.getProperty("con_settings");
+        DB_URL = props.getProperty("sql_url") + props.getProperty("db_name") + "?" +
+                props.getProperty("con_settings");
+        USER = props.getProperty("user");
+        PASS = props.getProperty("pass");
     }
 
     private void initDatabase() {
@@ -219,7 +231,7 @@ public class DBHandler {
     public List<News> getNewsBySite(String siteName, int limit) {
         List<News> news = new ArrayList<>();
         String sql = "SELECT url, text, title, pubTime FROM News " +
-                "WHERE siteName=? ORDER BY date DESC LIMIT ?";
+                "WHERE siteName=? ORDER BY pubTime DESC LIMIT ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, siteName);
             stmt.setInt(2, limit);
