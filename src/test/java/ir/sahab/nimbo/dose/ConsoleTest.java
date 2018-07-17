@@ -1,4 +1,4 @@
-package com.sahab.nimbo.dose;
+package ir.sahab.nimbo.dose;
 
 public class ConsoleTest {
 }

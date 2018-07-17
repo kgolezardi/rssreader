@@ -1,8 +1,8 @@
-package com.sahab.nimbo.dose;
+package ir.sahab.nimbo.dose;
 
-import com.sahab.nimbo.dose.rss.Feed;
-import com.sahab.nimbo.dose.rss.FeedMessage;
-import com.sahab.nimbo.dose.rss.RssFeedParser;
+import ir.sahab.nimbo.dose.rss.Feed;
+import ir.sahab.nimbo.dose.rss.FeedMessage;
+import ir.sahab.nimbo.dose.rss.RssFeedParser;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;

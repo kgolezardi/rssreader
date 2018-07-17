@@ -1,4 +1,4 @@
-package com.sahab.nimbo.dose.rss;
+package ir.sahab.nimbo.dose.rss;
 
 /*
  * Represents one RSS message

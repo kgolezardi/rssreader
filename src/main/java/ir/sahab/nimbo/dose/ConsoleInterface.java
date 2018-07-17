@@ -1,4 +1,4 @@
-package com.sahab.nimbo.dose;
+package ir.sahab.nimbo.dose;
 
 import java.util.Date;
 import java.util.GregorianCalendar;

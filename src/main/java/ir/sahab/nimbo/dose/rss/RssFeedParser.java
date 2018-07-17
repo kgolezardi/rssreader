@@ -1,4 +1,4 @@
-package com.sahab.nimbo.dose.rss;
+package ir.sahab.nimbo.dose.rss;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,9 +10,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.XMLEvent;
-
-import com.sahab.nimbo.dose.rss.Feed;
-import com.sahab.nimbo.dose.rss.FeedMessage;
 
 public class RssFeedParser {
     static final String TITLE = "title";

@@ -1,4 +1,4 @@
-package com.sahab.nimbo.dose;
+package ir.sahab.nimbo.dose;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
