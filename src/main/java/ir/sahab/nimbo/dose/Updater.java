@@ -1,5 +1,6 @@
 package ir.sahab.nimbo.dose;
 
+import ir.sahab.nimbo.dose.database.DbHandler;
 import ir.sahab.nimbo.dose.rss.Feed;
 import ir.sahab.nimbo.dose.rss.FeedMessage;
 import ir.sahab.nimbo.dose.rss.RssFeedParser;
@@ -16,7 +17,7 @@ public class Updater implements Runnable {
 
     @Override
     public void run() {
-        List<Site> sites = DBHandler.getInstance().allSites();
+        List<Site> sites = DbHandler.getInstance().allSites();
         for (Site site : sites) {
             executorService.submit(new SiteUpdater(site, executorService));
         }

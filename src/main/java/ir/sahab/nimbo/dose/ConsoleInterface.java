@@ -1,5 +1,7 @@
 package ir.sahab.nimbo.dose;
 
+import ir.sahab.nimbo.dose.database.DbHandler;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -74,7 +76,7 @@ public class ConsoleInterface implements Runnable {
                     System.out.print("Text contains: ");
                     String textCon = scanner.nextLine();
 
-                    List<News> allNews = DBHandler.getInstance().searchNews(titleCon, textCon);
+                    List<News> allNews = DbHandler.getInstance().searchNews(titleCon, textCon);
                     printNews(allNews);
 
                     break;
@@ -83,7 +85,7 @@ public class ConsoleInterface implements Runnable {
                     System.out.print("Site name/address: ");
                     String siteName = scanner.nextLine();
 
-                    allNews = DBHandler.getInstance().getNewsBySite(siteName, 10);
+                    allNews = DbHandler.getInstance().getNewsBySite(siteName, 10);
                     int num = 0;
                     for (News news : allNews) {
                         num++;
@@ -107,7 +109,7 @@ public class ConsoleInterface implements Runnable {
                     System.out.print("Site name/address: ");
                     siteName = scanner.nextLine();
 
-                    allNews = DBHandler.getInstance().getNewsBySiteDate(siteName, new Date());
+                    allNews = DbHandler.getInstance().getNewsBySiteDate(siteName, new Date());
                     System.out.println(allNews.size());
 
                     break;
@@ -122,7 +124,7 @@ public class ConsoleInterface implements Runnable {
                     int year = scanner.nextInt();
                     scanner.nextLine();
 
-                    allNews = DBHandler.getInstance().getNewsBySiteDate(siteName,
+                    allNews = DbHandler.getInstance().getNewsBySiteDate(siteName,
                             new GregorianCalendar(year, month - 1, day + 1).getTime());
                     System.out.println(allNews.size());
 

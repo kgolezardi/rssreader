@@ -1,5 +1,10 @@
-package ir.sahab.nimbo.dose;
+package ir.sahab.nimbo.dose.database;
 
+import ir.sahab.nimbo.dose.Config;
+import ir.sahab.nimbo.dose.News;
+import ir.sahab.nimbo.dose.Site;
+
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
@@ -8,58 +13,30 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-public class DBHandler {
-    private String SQL_URL;
-    private String DB_URL;
-    private String USER;
-    private String PASS;
-    private String DB_NAME;
+public class DbHandler {
 
-    private static DBHandler ourInstance = new DBHandler();
+    private static DbHandler ourInstance = new DbHandler();
 
-    private Connection conn = null;
     // TODO: connection pool
     // TODO: hash primary key
     // TODO: command line interface
     // TODO: unit tests
 
-    private DBHandler() {
-        getConifgs();
-        try {
-            initDatabase();
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            initTables();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private DbHandler() {
+        initDatabase();
+        initTables();
     }
 
-    static DBHandler getInstance() {
+    public static DbHandler getInstance() {
         return ourInstance;
     }
 
-    private void getConifgs() {
-        String resourceName = "db.properties";
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        Properties props = new Properties();
-        try (InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
-            props.load(resourceStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        DB_NAME = props.getProperty("db_name");
-        SQL_URL = props.getProperty("sql_url") + "?" + props.getProperty("con_settings");
-        DB_URL = props.getProperty("sql_url") + DB_NAME + "?" +
-                props.getProperty("con_settings");
-        USER = props.getProperty("user");
-        PASS = props.getProperty("pass");
-    }
-
     private void initDatabase() {
-        try (Connection tempConn = DriverManager.getConnection(SQL_URL, USER, PASS);
+        try (Connection tempConn = DriverManager.getConnection(Config.getInstance().SQL_URL + "?" +
+                Config.getInstance().CONNECTION_SETTINGS, Config.getInstance().USER,
+                Config.getInstance().PASS);
              Statement stmt = tempConn.createStatement()) {
-            String sql = "CREATE DATABASE IF NOT EXISTS `" + DB_NAME + "` " +
+            String sql = "CREATE DATABASE IF NOT EXISTS `" + Config.getInstance().DB_NAME + "` " +
                     "/*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci */;\n";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
@@ -68,7 +45,8 @@ public class DBHandler {
     }
 
     private void initTables() {
-        try (Statement stmt = conn.createStatement()) {
+        try (Connection conn = DataSource.getInstance().getConnection();
+             Statement stmt = conn.createStatement()) {
             String createSite = "CREATE TABLE IF NOT EXISTS `Sites` (\n" +
                     "  `name` varchar(45) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
                     "  `link` varchar(200) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
@@ -97,6 +75,10 @@ public class DBHandler {
             stmt.executeUpdate(createNews);
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -104,7 +86,8 @@ public class DBHandler {
         String sql = "INSERT INTO Sites (name, link, tag, attribute, attributeValue) " +
                 "VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DataSource.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, site.getAddress());
             stmt.setString(2, site.getFeedUrl());
             stmt.setString(3, site.getTag());
@@ -115,13 +98,18 @@ public class DBHandler {
         } catch (SQLException se) {
             se.printStackTrace();
             return false;
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return true;
     }
 
     public List<Site> allSites() {
         List<Site> sites = new ArrayList<Site>();
-        try (Statement stmt = conn.createStatement()) {
+        try (Connection conn = DataSource.getInstance().getConnection();
+             Statement stmt = conn.createStatement()) {
             String sql = "SELECT name, link, tag, attribute, attributeValue FROM Sites";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -135,19 +123,28 @@ public class DBHandler {
             }
         } catch (SQLException se) {
             se.printStackTrace();
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return sites;
     }
 
     public boolean existsUrl(String url) {
         String sql = "SELECT url FROM News WHERE url=?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DataSource.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, url);
             ResultSet rs = stmt.executeQuery();
             if (rs.next())
                 return true;
         } catch (SQLException se) {
             se.printStackTrace();
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -156,7 +153,8 @@ public class DBHandler {
         String sql = "INSERT INTO News (url, text, title, pubTime, siteName) " +
                 "VALUES (?, ?, ?, ?, ?);";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DataSource.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, news.getUrl());
             stmt.setString(2, news.getText());
             stmt.setString(3, news.getTitle());
@@ -166,6 +164,10 @@ public class DBHandler {
         } catch (SQLException se) {
             se.printStackTrace();
             return false;
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return true;
     }
@@ -173,7 +175,8 @@ public class DBHandler {
     public Site getSite(String name) {
         String sql = "SELECT name, link, tag, attribute, attributeValue FROM Sites " +
                 "WHERE name=?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DataSource.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, name);
 
             ResultSet rs = stmt.executeQuery();
@@ -188,6 +191,10 @@ public class DBHandler {
 
         } catch (SQLException se) {
             se.printStackTrace();
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -207,7 +214,8 @@ public class DBHandler {
                 "AND text LIKE ? ESCAPE '!'";
         titleCon = "%" + escapeLikeString(titleCon) + "%";
         textCon = "%" + escapeLikeString(textCon) + "%";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DataSource.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, titleCon);
             stmt.setString(2, textCon);
 
@@ -223,6 +231,10 @@ public class DBHandler {
             }
         } catch (SQLException se) {
             se.printStackTrace();
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return news;
     }
@@ -231,7 +243,8 @@ public class DBHandler {
         List<News> news = new ArrayList<>();
         String sql = "SELECT url, text, title, pubTime FROM News " +
                 "WHERE siteName=? ORDER BY pubTime DESC LIMIT ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DataSource.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, siteName);
             stmt.setInt(2, limit);
 
@@ -246,6 +259,10 @@ public class DBHandler {
             }
         } catch (SQLException se) {
             se.printStackTrace();
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return news;
     }
@@ -256,7 +273,8 @@ public class DBHandler {
         String sql = "SELECT url, text, title, pubTime FROM News " +
                 "WHERE siteName=? AND DATE(pubTime)=?";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DataSource.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, siteName);
             stmt.setDate(2, sqlDate);
 
@@ -271,6 +289,10 @@ public class DBHandler {
             }
         } catch (SQLException se) {
             se.printStackTrace();
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return news;
     }

@@ -1,6 +1,8 @@
 package ir.sahab.nimbo.dose;
 
 
+import ir.sahab.nimbo.dose.database.DbHandler;
+
 public class Site {
     private String address;
     private String feedUrl;
@@ -38,6 +40,6 @@ public class Site {
     }
 
     public void addToDb() {
-        DBHandler.getInstance().addSite(this);
+        DbHandler.getInstance().addSite(this);
     }
 }

@@ -1,5 +1,6 @@
 package ir.sahab.nimbo.dose;
 
+import ir.sahab.nimbo.dose.database.DbHandler;
 import ir.sahab.nimbo.dose.rss.FeedMessage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -38,11 +39,11 @@ public class News {
     }
 
     public synchronized boolean addToDb() {
-        if (!DBHandler.getInstance().existsUrl(url)) {
+        if (!DbHandler.getInstance().existsUrl(url)) {
             try {
                 this.text = fetch();
                 if (this.text != null)
-                    DBHandler.getInstance().addNews(this);
+                    DbHandler.getInstance().addNews(this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -53,7 +54,7 @@ public class News {
 
     private String fetch() throws IOException {
         Document doc = Jsoup.connect(url).get();
-        Site site = DBHandler.getInstance().getSite(siteName);
+        Site site = DbHandler.getInstance().getSite(siteName);
 
         Elements divs = doc.select(site.getTag() + "[" + site.getAttribute() + "]");
         for (Element div : divs) {
