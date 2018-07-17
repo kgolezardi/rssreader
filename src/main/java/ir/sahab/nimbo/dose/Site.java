@@ -2,6 +2,10 @@ package ir.sahab.nimbo.dose;
 
 
 import ir.sahab.nimbo.dose.database.DbHandler;
+import ir.sahab.nimbo.dose.rss.Feed;
+import ir.sahab.nimbo.dose.rss.FeedMessage;
+import ir.sahab.nimbo.dose.rss.RssFeedParser;
+import sun.jvm.hotspot.debugger.Address;
 
 public class Site {
     private String address;
@@ -41,5 +45,14 @@ public class Site {
 
     public void addToDb() {
         DbHandler.getInstance().addSite(this);
+    }
+
+    public void update() {
+        RssFeedParser parser = new RssFeedParser(feedUrl);
+        Feed feed = parser.readFeed();
+        for (FeedMessage message : feed.getMessages()) {
+            News news = new News(message, address);
+            news.addToDb();
+        }
     }
 }

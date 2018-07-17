@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.Date;
 
 public class News {
+    private static final Object MUTEX = new Object();
+
     private String toBeParsedDate;
     private Date date;
     private String title;
@@ -38,18 +40,20 @@ public class News {
         return DateParser.getInstance().parseDate(date);
     }
 
-    public synchronized boolean addToDb() {
-        if (!DbHandler.getInstance().existsUrl(url)) {
-            try {
-                this.text = fetch();
-                if (this.text != null)
-                    DbHandler.getInstance().addNews(this);
-            } catch (IOException e) {
-                e.printStackTrace();
+    public boolean addToDb() {
+        synchronized (MUTEX) {
+            if (!DbHandler.getInstance().existsUrl(url)) {
+                try {
+                    this.text = fetch();
+                    if (this.text != null)
+                        DbHandler.getInstance().addNews(this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return true;
             }
-            return true;
+            return false;
         }
-        return false;
     }
 
     private String fetch() throws IOException {
