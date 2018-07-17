@@ -16,16 +16,7 @@ public class DateParser {
     }
 
     private void getConifgs() {
-        String resourceName = "dateParseFormat.properties";
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        Properties props = new Properties();
-        try (InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
-            props.load(resourceStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        formats = Arrays.asList(props.getProperty("formats").split("\",\""));
+        formats = Arrays.asList(Config.getInstance().FORMATS.split("\",\""));
     }
 
     public Date parseDate(String date) {

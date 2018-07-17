@@ -17,10 +17,8 @@ public class DbHandler {
 
     private static DbHandler ourInstance = new DbHandler();
 
-    // TODO: connection pool
     // TODO: hash primary key
     // TODO: command line interface
-    // TODO: unit tests
 
     private DbHandler() {
         initDatabase();

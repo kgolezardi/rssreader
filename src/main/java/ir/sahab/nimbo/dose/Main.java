@@ -6,8 +6,20 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
-        executor.submit(ConsoleInterface.getInstance());
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(10,
+                r -> {
+                    Thread t = Executors.defaultThreadFactory().newThread(r);
+                    t.setDaemon(true);
+                    return t;
+                });
+        Thread consoleInterfaceThread = new Thread(ConsoleInterface.getInstance());
         executor.scheduleWithFixedDelay(new Updater(executor), 1, 10, TimeUnit.SECONDS);
+
+        consoleInterfaceThread.start();
+        try {
+            consoleInterfaceThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

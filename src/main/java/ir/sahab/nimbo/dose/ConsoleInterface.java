@@ -39,12 +39,15 @@ public class ConsoleInterface implements Runnable {
 
             System.out.println();
         }
+
+        if (num == 0)
+            System.out.println("No news found!");
     }
 
     @Override
     public void run() {
-        // TODO: Determine when to exit
-        while (true) {
+        boolean running = true;
+        while (running) {
             System.out.print("Command: ");
             String command = scanner.nextLine();
 
@@ -86,22 +89,7 @@ public class ConsoleInterface implements Runnable {
                     String siteName = scanner.nextLine();
 
                     allNews = DbHandler.getInstance().getNewsBySite(siteName, 10);
-                    int num = 0;
-                    for (News news : allNews) {
-                        num++;
-                        System.out.println("#" + num + "          ***");
-
-                        System.out.print("Title: ");
-                        System.out.println(news.getTitle());
-
-                        System.out.print("Date: ");
-                        System.out.println(news.getDate());
-
-                        System.out.print("Text: ");
-                        System.out.println(news.getText());
-
-                        System.out.println();
-                    }
+                    printNews(allNews);
 
                     break;
 
@@ -131,8 +119,7 @@ public class ConsoleInterface implements Runnable {
                     break;
 
                 case "exit":
-                    System.exit(0);
-                    // TODO: Shutdown the executor
+                    running = false;
                     break;
 
                 default:

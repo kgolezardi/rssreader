@@ -10,6 +10,7 @@ public class Config {
     public final String SQL_URL;
     public final String CONNECTION_SETTINGS;
     public final String DB_NAME;
+    public final String FORMATS;
 
     private static Config ourInstance = new Config();
 
@@ -32,5 +33,7 @@ public class Config {
         SQL_URL = props.getProperty("sql_url");
         USER = props.getProperty("user");
         PASS = props.getProperty("pass");
+
+        FORMATS = props.getProperty("formats");
     }
 }
