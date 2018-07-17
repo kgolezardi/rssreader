@@ -1,4 +1,4 @@
-package ir.sahab.nimbo.dose;
+package com.sahab.nimbo.dose;
 
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class DateParser {
         return ourInstance;
     }
 
-    private void getConifgs() {
+    private void getFormats() {
         String resourceName = "dateParseFormat.properties";
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         Properties props = new Properties();
@@ -30,7 +30,6 @@ public class DateParser {
 
     public Date parseDate(String date) {
         ParseException parseException = null;
-        Date util_sdate;
         boolean flag = false;
 
         for (String format : formats) {
@@ -50,6 +49,6 @@ public class DateParser {
     }
 
     private DateParser() {
-        getConifgs();
+        getFormats();
     }
 }
