@@ -10,11 +10,10 @@ import java.util.Properties;
 
 public class DBHandler {
     private String SQL_URL;
-
     private String DB_URL;
-
     private String USER;
     private String PASS;
+    private String DB_NAME;
 
     private static DBHandler ourInstance = new DBHandler();
 
@@ -23,7 +22,6 @@ public class DBHandler {
     // TODO: hash primary key
     // TODO: command line interface
     // TODO: unit tests
-    // TODO: date patterns
 
     private DBHandler() {
         getConifgs();
@@ -50,8 +48,9 @@ public class DBHandler {
             e.printStackTrace();
         }
 
+        DB_NAME = props.getProperty("db_name");
         SQL_URL = props.getProperty("sql_url") + "?" + props.getProperty("con_settings");
-        DB_URL = props.getProperty("sql_url") + props.getProperty("db_name") + "?" +
+        DB_URL = props.getProperty("sql_url") + DB_NAME + "?" +
                 props.getProperty("con_settings");
         USER = props.getProperty("user");
         PASS = props.getProperty("pass");
@@ -60,7 +59,7 @@ public class DBHandler {
     private void initDatabase() {
         try (Connection tempConn = DriverManager.getConnection(SQL_URL, USER, PASS);
              Statement stmt = tempConn.createStatement()) {
-            String sql = "CREATE DATABASE IF NOT EXISTS `NewsReader` " +
+            String sql = "CREATE DATABASE IF NOT EXISTS `" + DB_NAME + "` " +
                     "/*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci */;\n";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {

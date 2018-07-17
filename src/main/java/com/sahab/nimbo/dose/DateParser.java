@@ -33,13 +33,13 @@ public class DateParser {
         Date util_sdate;
         boolean flag = false;
 
-        for(String format: formats){
+        for (String format : formats) {
             try{
                 SimpleDateFormat sdf = new SimpleDateFormat(format);
                 sdf.setLenient(false);
                 util_sdate = sdf.parse(date);
                 return util_sdate;
-            } catch (ParseException pe){
+            } catch (ParseException pe) {
                 parseException = pe;
             }
         }
