@@ -17,9 +17,6 @@ public class DbHandler {
 
     private static DbHandler ourInstance = new DbHandler();
 
-    // TODO: hash primary key
-    // TODO: command line interface
-
     private DbHandler() {
         initDatabase();
         initTables();

@@ -48,7 +48,7 @@ public class ConsoleInterface implements Runnable {
     public void run() {
         boolean running = true;
         while (running) {
-            System.out.print("Command: ");
+            System.out.print("\nCommand: ");
             String command = scanner.nextLine();
 
             switch (command) {
@@ -69,7 +69,6 @@ public class ConsoleInterface implements Runnable {
                     String attributeValue = scanner.nextLine();
 
                     new Site(address, feedUrl, tag, attribute, attributeValue).addToDb();
-                    // TODO: get exception when duplicated
                     break;
 
                 case "search":
@@ -116,6 +115,16 @@ public class ConsoleInterface implements Runnable {
                             new GregorianCalendar(year, month - 1, day + 1).getTime());
                     System.out.println(allNews.size());
 
+                    break;
+
+                case "help":
+                    System.out.println("You can enter one of these commands:\n" +
+                            "  > add site\n" +
+                            "  > search\n" +
+                            "  > last ten\n" +
+                            "  > count today\n" +
+                            "  > count\n" +
+                            "  > exit");
                     break;
 
                 case "exit":
