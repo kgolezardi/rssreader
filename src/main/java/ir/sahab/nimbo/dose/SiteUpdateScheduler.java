@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class SiteUpdateScheduler implements Runnable {
+    // TODO: get configs
     private static SiteUpdateScheduler ourInstance = new SiteUpdateScheduler();
 
     public static SiteUpdateScheduler getInstance() {
@@ -29,7 +30,7 @@ public class SiteUpdateScheduler implements Runnable {
         executor.scheduleWithFixedDelay(() -> {
             List<Site> sites = DbHandler.getInstance().allSites();
             for (Site site : sites) {
-                executor.submit(() -> site.update());
+                executor.submit(site::update);
             }
         }, 1, 10, TimeUnit.SECONDS);
     }

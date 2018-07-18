@@ -45,7 +45,7 @@ public class DbHandler {
                     "  `link` varchar(200) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
                     "  `tag` varchar(50) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
                     "  `attribute` varchar(50) COLLATE utf8mb4_persian_ci DEFAULT NULL,\n" +
-                    "  `attributeValue` varchar(50) COLLATE utf8mb4_persian_ci DEFAULT NULL,\n" +
+                    "  `attributeValue` varchar(200) COLLATE utf8mb4_persian_ci DEFAULT NULL,\n" +
                     "  PRIMARY KEY (`name`),\n" +
                     "  UNIQUE KEY `link_UNIQUE` (`link`),\n" +
                     "  UNIQUE KEY `name_UNIQUE` (`name`)\n" +

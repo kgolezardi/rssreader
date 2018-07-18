@@ -70,6 +70,7 @@ public class ConsoleInterface implements Runnable {
 
                     new Site(address, feedUrl, tag, attribute, attributeValue).addToDb();
                     break;
+                    // TODO: get exception when duplicated
 
                 case "search":
                     System.out.print("Title contains: ");

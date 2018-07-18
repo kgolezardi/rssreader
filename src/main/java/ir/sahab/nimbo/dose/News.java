@@ -72,6 +72,7 @@ public class News {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.println("Site name: " + siteName);
         }
         return null;
     }
