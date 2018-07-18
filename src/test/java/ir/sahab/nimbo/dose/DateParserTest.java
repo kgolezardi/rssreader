@@ -36,4 +36,10 @@ public class DateParserTest {
         Assert.assertEquals(d.toString(), "Tue Jul 17 09:34:00 IRDT 2018");
     }
 
+    @Test
+    public void dateParseFormat6Test() {
+        Date d = DateParser.getInstance().parseDate("Tuesday, 17 July 2018 09:34");
+        Assert.assertEquals(d.toString(), "Tue Jul 17 09:34:00 IRDT 2018");
+    }
+
 }
