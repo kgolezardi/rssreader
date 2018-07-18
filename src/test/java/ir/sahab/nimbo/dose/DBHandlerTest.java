@@ -2,9 +2,9 @@ package ir.sahab.nimbo.dose;
 
 import org.junit.Test;
 
-public class ConsoleTest {
+public class DBHandlerTest {
     @Test
-    public void consoleTest() {
+    public void dbTest() {
 
     }
 }

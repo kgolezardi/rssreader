@@ -2,14 +2,13 @@ package ir.sahab.nimbo.dose;
 
 
 import ir.sahab.nimbo.dose.database.DbHandler;
-import ir.sahab.nimbo.dose.rss.Feed;
-import ir.sahab.nimbo.dose.rss.FeedMessage;
+import ir.sahab.nimbo.dose.rss.RssFeed;
+import ir.sahab.nimbo.dose.rss.RssFeedMessage;
 import ir.sahab.nimbo.dose.rss.RssFeedParser;
-import sun.jvm.hotspot.debugger.Address;
 
 public class Site {
     private String address;
-    private String feedUrl;
+    private String rssFeedUrl;
     private String tag;
     private String attribute;
     private String attributeValue;
@@ -18,9 +17,9 @@ public class Site {
         return tag;
     }
 
-    public Site (String address, String feedUrl, String tag, String attribute, String attributeValue){
+    public Site (String address, String rssFeedUrl, String tag, String attribute, String attributeValue){
         this.address = address;
-        this.feedUrl = feedUrl;
+        this.rssFeedUrl = rssFeedUrl;
         this.tag = tag;
         this.attribute = attribute;
         this.attributeValue = attributeValue;
@@ -35,8 +34,8 @@ public class Site {
         return attribute;
     }
 
-    public String getFeedUrl() {
-        return feedUrl;
+    public String getRssFeedUrl() {
+        return rssFeedUrl;
     }
 
     public String getAddress() {
@@ -48,10 +47,11 @@ public class Site {
     }
 
     public void update() {
-        RssFeedParser parser = new RssFeedParser(feedUrl);
-        Feed feed = parser.readFeed();
-        for (FeedMessage message : feed.getMessages()) {
+        RssFeedParser parser = new RssFeedParser(rssFeedUrl);
+        RssFeed feed = parser.readFeed();
+        for (RssFeedMessage message : feed.getMessages()) {
             News news = new News(message, address);
+            news.fetch();
             news.addToDb();
         }
     }

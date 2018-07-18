@@ -12,18 +12,17 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.XMLEvent;
 
 public class RssFeedParser {
-    static final String TITLE = "title";
-    static final String DESCRIPTION = "description";
-    static final String CHANNEL = "channel";
-    static final String LANGUAGE = "language";
-    static final String COPYRIGHT = "copyright";
-    static final String LINK = "link";
-    static final String AUTHOR = "author";
-    static final String ITEM = "item";
-    static final String PUB_DATE = "pubDate";
-    static final String GUID = "guid";
+    private static final String TITLE = "title";
+    private static final String DESCRIPTION = "description";
+    private static final String LANGUAGE = "language";
+    private static final String COPYRIGHT = "copyright";
+    private static final String LINK = "link";
+    private static final String AUTHOR = "author";
+    private static final String ITEM = "item";
+    private static final String PUB_DATE = "pubDate";
+    private static final String GUID = "guid";
 
-    final URL url;
+    private final URL url;
 
     public RssFeedParser(String feedUrl) {
         try {
@@ -33,18 +32,18 @@ public class RssFeedParser {
         }
     }
 
-    public Feed readFeed() {
-        Feed feed = null;
+    public RssFeed readFeed() {
+        RssFeed rssFeed = null;
         try {
             boolean isFeedHeader = true;
-            // Set header values intial to the empty string
+            // Set header values initial to the empty string
             String description = "";
             String title = "";
             String link = "";
             String language = "";
             String copyright = "";
             String author = "";
-            String pubdate = "";
+            String pubDate = "";
             String guid = "";
 
             // First create a new XMLInputFactory
@@ -62,61 +61,58 @@ public class RssFeedParser {
                         case ITEM:
                             if (isFeedHeader) {
                                 isFeedHeader = false;
-                                feed = new Feed(title, link, description, language,
-                                        copyright, pubdate);
+                                rssFeed = new RssFeed(title, link, description, language,
+                                        copyright, pubDate);
                             }
-                            event = eventReader.nextEvent();
                             break;
                         case TITLE:
-                            title = getCharacterData(event, eventReader);
+                            title = getCharacterData(eventReader);
                             break;
                         case DESCRIPTION:
-                            description = getCharacterData(event, eventReader);
+                            description = getCharacterData(eventReader);
                             break;
                         case LINK:
-                            link = getCharacterData(event, eventReader);
+                            link = getCharacterData(eventReader);
                             break;
                         case GUID:
-                            guid = getCharacterData(event, eventReader);
+                            guid = getCharacterData(eventReader);
                             break;
                         case LANGUAGE:
-                            language = getCharacterData(event, eventReader);
+                            language = getCharacterData(eventReader);
                             break;
                         case AUTHOR:
-                            author = getCharacterData(event, eventReader);
+                            author = getCharacterData(eventReader);
                             break;
                         case PUB_DATE:
-                            pubdate = getCharacterData(event, eventReader);
+                            pubDate = getCharacterData(eventReader);
                             break;
                         case COPYRIGHT:
-                            copyright = getCharacterData(event, eventReader);
+                            copyright = getCharacterData(eventReader);
                             break;
                     }
                 } else if (event.isEndElement()) {
-                    if (event.asEndElement().getName().getLocalPart() == (ITEM)) {
-                        FeedMessage message = new FeedMessage();
+                    if (event.asEndElement().getName().getLocalPart().equals(ITEM)) {
+                        RssFeedMessage message = new RssFeedMessage();
                         message.setAuthor(author);
                         message.setDescription(description);
                         message.setGuid(guid);
                         message.setLink(link);
                         message.setTitle(title);
-                        message.setPubDate(pubdate);
-                        feed.getMessages().add(message);
-                        event = eventReader.nextEvent();
-                        continue;
+                        message.setPubDate(pubDate);
+                        rssFeed.getMessages().add(message);
                     }
                 }
             }
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
-        return feed;
+        return rssFeed;
     }
 
-    private String getCharacterData(XMLEvent event, XMLEventReader eventReader)
+    private String getCharacterData(XMLEventReader eventReader)
             throws XMLStreamException {
         String result = "";
-        event = eventReader.nextEvent();
+        XMLEvent event = eventReader.nextEvent();
         if (event instanceof Characters) {
             result = event.asCharacters().getData();
         }

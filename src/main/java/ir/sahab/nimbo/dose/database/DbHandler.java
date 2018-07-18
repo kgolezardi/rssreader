@@ -6,12 +6,10 @@ import ir.sahab.nimbo.dose.Site;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 public class DbHandler {
 
@@ -84,7 +82,7 @@ public class DbHandler {
         try (Connection conn = DataSource.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, site.getAddress());
-            stmt.setString(2, site.getFeedUrl());
+            stmt.setString(2, site.getRssFeedUrl());
             stmt.setString(3, site.getTag());
             stmt.setString(4, site.getAttribute());
             stmt.setString(5, site.getAttributeValue());

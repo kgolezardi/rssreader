@@ -6,19 +6,19 @@ import java.util.List;
 /*
  * Stores an RSS feed
  */
-public class Feed {
+public class RssFeed {
 
-    final String title;
-    final String link;
-    final String description;
-    final String language;
-    final String copyright;
-    final String pubDate;
+    private final String title;
+    private final String link;
+    private final String description;
+    private final String language;
+    private final String copyright;
+    private final String pubDate;
 
-    final List<FeedMessage> entries = new ArrayList<FeedMessage>();
+    private final List<RssFeedMessage> entries = new ArrayList<RssFeedMessage>();
 
-    public Feed(String title, String link, String description, String language,
-                String copyright, String pubDate) {
+    public RssFeed(String title, String link, String description, String language,
+                   String copyright, String pubDate) {
         this.title = title;
         this.link = link;
         this.description = description;
@@ -27,7 +27,7 @@ public class Feed {
         this.pubDate = pubDate;
     }
 
-    public List<FeedMessage> getMessages() {
+    public List<RssFeedMessage> getMessages() {
         return entries;
     }
 
@@ -57,7 +57,7 @@ public class Feed {
 
     @Override
     public String toString() {
-        return "Feed [copyright=" + copyright + ", description=" + description
+        return "RssFeed [copyright=" + copyright + ", description=" + description
                 + ", language=" + language + ", link=" + link + ", pubDate="
                 + pubDate + ", title=" + title + "]";
     }

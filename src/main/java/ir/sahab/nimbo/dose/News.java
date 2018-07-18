@@ -1,7 +1,7 @@
 package ir.sahab.nimbo.dose;
 
 import ir.sahab.nimbo.dose.database.DbHandler;
-import ir.sahab.nimbo.dose.rss.FeedMessage;
+import ir.sahab.nimbo.dose.rss.RssFeedMessage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,16 +13,24 @@ import java.util.Date;
 public class News {
     private static final Object MUTEX = new Object();
 
-    private String toBeParsedDate;
     private Date date;
     private String title;
     private String url;
     private String siteName;
     private String text;
 
-    public News(FeedMessage message, String siteName) {
+    public News(RssFeedMessage message, String siteName) {
         this(message.getLink(), message.getTitle(), null, message.getPubDate(), siteName);
     }
+
+    public News(String url, String title, String date, String siteName) {
+        this(url, title, null, date, siteName);
+    }
+
+    public News(String url, String title, Date date, String siteName) {
+        this(url, title, null, date, siteName);
+    }
+
 
     public News(String url, String title, String text, Date date, String siteName) {
         this.url = url;
@@ -42,28 +50,28 @@ public class News {
 
     public boolean addToDb() {
         synchronized (MUTEX) {
-            if (!DbHandler.getInstance().existsUrl(url)) {
-                try {
-                    this.text = fetch();
-                    if (this.text != null)
-                        DbHandler.getInstance().addNews(this);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            if (!DbHandler.getInstance().existsUrl(url))
+                if (this.text != null) {
+                    DbHandler.getInstance().addNews(this);
+                    return true;
                 }
-                return true;
-            }
             return false;
         }
     }
 
-    private String fetch() throws IOException {
-        Document doc = Jsoup.connect(url).get();
-        Site site = DbHandler.getInstance().getSite(siteName);
-
-        Elements divs = doc.select(site.getTag() + "[" + site.getAttribute() + "]");
-        for (Element div : divs) {
-            if (div.attr(site.getAttribute()).contains(site.getAttributeValue()))
-                return div.text();
+    public String fetch() {
+        try {
+            Document doc = Jsoup.connect(url).get();
+            Site site = DbHandler.getInstance().getSite(siteName);
+            Elements divs = doc.select(site.getTag() + "[" + site.getAttribute() + "]");
+            for (Element div : divs) {
+                if (div.attr(site.getAttribute()).contains(site.getAttributeValue())){
+                    this.text = div.text();
+                    return div.text();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
