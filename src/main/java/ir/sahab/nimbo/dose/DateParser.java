@@ -1,4 +1,4 @@
-package com.sahab.nimbo.dose;
+package ir.sahab.nimbo.dose;
 
 
 import java.io.IOException;
@@ -36,8 +36,7 @@ public class DateParser {
             try{
                 SimpleDateFormat sdf = new SimpleDateFormat(format);
                 sdf.setLenient(false);
-                util_sdate = sdf.parse(date);
-                return util_sdate;
+                return sdf.parse(date);
             } catch (ParseException pe) {
                 parseException = pe;
             }

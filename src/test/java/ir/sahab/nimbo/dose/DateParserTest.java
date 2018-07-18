@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import java.util.Date;
 
-public class DateParseTest {
+public class DateParserTest {
     @Test
     public void dateParseFormat1Test() {
         Date d = DateParser.getInstance().parseDate("July 17, 2018, 9:34 AM");

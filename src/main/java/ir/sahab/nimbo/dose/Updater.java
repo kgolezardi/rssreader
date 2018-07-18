@@ -1,9 +1,10 @@
 package ir.sahab.nimbo.dose;
 
-import ir.sahab.nimbo.dose.rss.Feed;
-import ir.sahab.nimbo.dose.rss.FeedMessage;
+import ir.sahab.nimbo.dose.rss.RssFeed;
+import ir.sahab.nimbo.dose.rss.RssFeedMessage;
 import ir.sahab.nimbo.dose.rss.RssFeedParser;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -35,13 +36,20 @@ class SiteUpdater implements Runnable {
     @Override
     public void run() {
         RssFeedParser parser = new RssFeedParser(site.getFeedUrl());
-        Feed feed = parser.readFeed();
-        for (FeedMessage message : feed.getMessages()) {
+        RssFeed rssFeed = parser.readFeed();
+        for (RssFeedMessage message : rssFeed.getMessages()) {
             News news = new News(message, site.getAddress());
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    news.addToDb();
+                    try {
+                        Site site = DBHandler.getInstance().getSite(rssFeed.getLink());
+                        news.fetch(site);
+                        news.addToDb();
+                    }
+                    catch (IOException e){
+                        e.printStackTrace();
+                    }
                 }
             });
         }

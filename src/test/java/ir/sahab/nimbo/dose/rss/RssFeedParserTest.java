@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class RssRssFeedParserTest {
+public class RssFeedParserTest {
     private RssFeed rssFeed;
     @Before
     public void loadRssParser() {

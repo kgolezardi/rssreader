@@ -3,14 +3,14 @@ package ir.sahab.nimbo.dose.rss;
 /*
  * Represents one RSS message
  */
-public class FeedMessage {
+public class RssFeedMessage {
 
-    String pubDate;
-    String title;
-    String description;
-    String link;
-    String author;
-    String guid;
+    private String pubDate;
+    private String title;
+    private String description;
+    private String link;
+    private String author;
+    private String guid;
 
 
     public String getTitle() {
@@ -19,7 +19,10 @@ public class FeedMessage {
 
     public void setPubDate(String pubDate) { this.pubDate = pubDate; }
 
-    public String getPubDate() { return pubDate; }
+    public String getPubDate() {
+        return pubDate;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -58,7 +61,7 @@ public class FeedMessage {
 
     @Override
     public String toString() {
-        return "FeedMessage [title=" + title + ", description=" + description
+        return "RssFeedMessage [title=" + title + ", description=" + description
                 + ", link=" + link + ", author=" + author + ", guid=" + guid
                 + ", pubDate=" + pubDate + "]";
     }

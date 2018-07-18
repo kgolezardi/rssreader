@@ -1,6 +1,6 @@
 package ir.sahab.nimbo.dose;
 
-import ir.sahab.nimbo.dose.rss.FeedMessage;
+import ir.sahab.nimbo.dose.rss.RssFeedMessage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,9 +17,18 @@ public class News {
     private String siteName;
     private String text;
 
-    public News(FeedMessage message, String siteName) {
+    public News(RssFeedMessage message, String siteName) {
         this(message.getLink(), message.getTitle(), null, message.getPubDate(), siteName);
     }
+
+    public News(String url, String title, String date, String siteName) {
+        this(url, title, null, date, siteName);
+    }
+
+    public News(String url, String title, Date date, String siteName) {
+        this(url, title, null, date, siteName);
+    }
+
 
     public News(String url, String title, String text, Date date, String siteName) {
         this.url = url;
@@ -38,27 +47,23 @@ public class News {
     }
 
     public synchronized boolean addToDb() {
-        if (!DBHandler.getInstance().existsUrl(url)) {
-            try {
-                this.text = fetch();
-                if (this.text != null)
-                    DBHandler.getInstance().addNews(this);
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (!DBHandler.getInstance().existsUrl(url))
+            if (this.text != null) {
+                DBHandler.getInstance().addNews(this);
+                return true;
             }
-            return true;
-        }
         return false;
     }
 
-    private String fetch() throws IOException {
+    public String fetch(Site site) throws IOException {
         Document doc = Jsoup.connect(url).get();
-        Site site = DBHandler.getInstance().getSite(siteName);
 
         Elements divs = doc.select(site.getTag() + "[" + site.getAttribute() + "]");
         for (Element div : divs) {
-            if (div.attr(site.getAttribute()).contains(site.getAttributeValue()))
+            if (div.attr(site.getAttribute()).contains(site.getAttributeValue())){
+                this.text = div.text();
                 return div.text();
+            }
         }
         return null;
     }

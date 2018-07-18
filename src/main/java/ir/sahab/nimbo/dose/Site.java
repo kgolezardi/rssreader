@@ -12,7 +12,7 @@ public class Site {
         return tag;
     }
 
-    public Site (String address, String feedUrl, String tag, String attribute, String attributeValue){
+    public Site (String address, String rssFeedUrl, String tag, String attribute, String attributeValue){
         this.address = address;
         this.feedUrl = feedUrl;
         this.tag = tag;
