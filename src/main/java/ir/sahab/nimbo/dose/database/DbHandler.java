@@ -25,16 +25,22 @@ public class DbHandler {
     }
 
     private void initDatabase() {
-        try (Connection tempConn = DriverManager.getConnection(Config.getInstance().SQL_URL + "?" +
-                Config.getInstance().CONNECTION_SETTINGS, Config.getInstance().USER,
-                Config.getInstance().PASS);
-             Statement stmt = tempConn.createStatement()) {
-            String sql = "CREATE DATABASE IF NOT EXISTS `" + Config.getInstance().DB_NAME + "` " +
-                    "/*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci */;\n";
-            stmt.executeUpdate(sql);
-        } catch (SQLException e) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try (Connection tempConn = DriverManager.getConnection(Config.getInstance().SQL_URL + "?" +
+                            Config.getInstance().CONNECTION_SETTINGS, Config.getInstance().USER,
+                    Config.getInstance().PASS);
+                 Statement stmt = tempConn.createStatement()) {
+                String sql = "CREATE DATABASE IF NOT EXISTS `" + Config.getInstance().DB_NAME + "` " +
+                        "/*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci */;\n";
+                stmt.executeUpdate(sql);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
     }
 
     private void initTables() {
