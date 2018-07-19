@@ -72,11 +72,7 @@ public class DbHandler {
 
             stmt.executeUpdate(createSite);
             stmt.executeUpdate(createNews);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | PropertyVetoException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -94,13 +90,9 @@ public class DbHandler {
             stmt.setString(5, site.getAttributeValue());
             stmt.executeUpdate();
 
-        } catch (SQLException se) {
+        } catch (SQLException | PropertyVetoException | IOException se) {
             se.printStackTrace();
             return false;
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return true;
     }
@@ -120,12 +112,8 @@ public class DbHandler {
                 String attributeValue = rs.getString("attributeValue");
                 sites.add(new Site(name, link, tag, attribute, attributeValue));
             }
-        } catch (SQLException se) {
+        } catch (SQLException | IOException | PropertyVetoException se) {
             se.printStackTrace();
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return sites;
     }
@@ -138,12 +126,8 @@ public class DbHandler {
             ResultSet rs = stmt.executeQuery();
             if (rs.next())
                 return true;
-        } catch (SQLException se) {
+        } catch (SQLException | PropertyVetoException | IOException se) {
             se.printStackTrace();
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return false;
     }
@@ -160,13 +144,9 @@ public class DbHandler {
             stmt.setTimestamp(4, new java.sql.Timestamp(news.getDate().getTime()));
             stmt.setString(5, news.getSiteName());
             stmt.executeUpdate();
-        } catch (SQLException se) {
+        } catch (SQLException | PropertyVetoException | IOException se) {
             se.printStackTrace();
             return false;
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return true;
     }
@@ -188,12 +168,8 @@ public class DbHandler {
                 return new Site(name, link, tag, attribute, attributeValue);
             }
 
-        } catch (SQLException se) {
+        } catch (SQLException | PropertyVetoException | IOException se) {
             se.printStackTrace();
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -219,28 +195,27 @@ public class DbHandler {
             stmt.setString(2, textCon);
 
             ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                String url = rs.getString("url");
-                String text = rs.getString("text");
-                String title = rs.getString("title");
-                java.util.Date date = rs.getTimestamp("pubTime");
-                String siteName = rs.getString("siteName");
-                news.add(new News(url, title, text, date, siteName));
-            }
-        } catch (SQLException se) {
+            addNewsToList(rs, news);
+        } catch (SQLException | PropertyVetoException | IOException se) {
             se.printStackTrace();
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return news;
     }
 
+    private void addNewsToList(ResultSet rs, List<News> news) throws SQLException {
+        while (rs.next()) {
+            String url = rs.getString("url");
+            String text = rs.getString("text");
+            String title = rs.getString("title");
+            java.util.Date date = rs.getTimestamp("pubTime");
+            String siteName = rs.getString("siteName");
+            news.add(new News(url, title, text, date, siteName));
+        }
+    }
+
     public List<News> getNewsBySite(String siteName, int limit) {
         List<News> news = new ArrayList<>();
-        String sql = "SELECT url, text, title, pubTime FROM News " +
+        String sql = "SELECT url, text, title, pubTime, siteName FROM News " +
                 "WHERE siteName=? ORDER BY pubTime DESC LIMIT ?";
         try (Connection conn = DataSource.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -249,19 +224,10 @@ public class DbHandler {
 
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                String url = rs.getString("url");
-                String text = rs.getString("text");
-                String title = rs.getString("title");
-                java.util.Date date = rs.getTimestamp("pubTime");
-                news.add(new News(url, title, text, date, siteName));
-            }
-        } catch (SQLException se) {
+            addNewsToList(rs, news);
+
+        } catch (SQLException | IOException | PropertyVetoException se) {
             se.printStackTrace();
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return news;
     }
@@ -279,20 +245,30 @@ public class DbHandler {
 
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                String url = rs.getString("url");
-                String text = rs.getString("text");
-                String title = rs.getString("title");
-                java.util.Date date = rs.getTimestamp("pubTime");
-                news.add(new News(url, title, text, date, siteName));
-            }
-        } catch (SQLException se) {
+            addNewsToList(rs, news);
+        } catch (SQLException | IOException | PropertyVetoException se) {
             se.printStackTrace();
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return news;
+    }
+
+    public void cleanDatabase() throws SQLException {
+        String sql = "DELETE FROM Sites WHERE TRUE";
+
+        try (Connection conn = DataSource.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+        } catch (PropertyVetoException | IOException se) {
+            se.printStackTrace();
+        }
+
+        sql = "DELETE FROM News WHERE TRUE";
+
+        try (Connection conn = DataSource.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+        } catch (PropertyVetoException | IOException se) {
+            se.printStackTrace();
+        }
     }
 }

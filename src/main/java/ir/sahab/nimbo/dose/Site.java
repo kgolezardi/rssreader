@@ -6,6 +6,8 @@ import ir.sahab.nimbo.dose.rss.RssFeed;
 import ir.sahab.nimbo.dose.rss.RssFeedMessage;
 import ir.sahab.nimbo.dose.rss.RssFeedParser;
 
+import java.util.Objects;
+
 public class Site {
     private String address;
     private String rssFeedUrl;
@@ -55,4 +57,17 @@ public class Site {
             news.addToDb();
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Site site = (Site) o;
+        return Objects.equals(address, site.address) &&
+                Objects.equals(rssFeedUrl, site.rssFeedUrl) &&
+                Objects.equals(tag, site.tag) &&
+                Objects.equals(attribute, site.attribute) &&
+                Objects.equals(attributeValue, site.attributeValue);
+    }
+
 }
