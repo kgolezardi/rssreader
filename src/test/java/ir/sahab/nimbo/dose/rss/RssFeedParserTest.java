@@ -9,6 +9,7 @@ import java.net.URL;
 
 public class RssFeedParserTest {
     private RssFeed rssFeed;
+
     @Before
     public void loadRssParser() {
         try {
@@ -19,6 +20,7 @@ public class RssFeedParserTest {
             Assert.fail();
         }
     }
+
     @Test
     public void feedNumberTest() {
         Assert.assertEquals(rssFeed.getMessages().size(), 30);

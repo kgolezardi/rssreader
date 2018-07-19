@@ -11,7 +11,8 @@ public class DateParserTest {
     @Test
     public void constructorTester() {
         List<String> formats = DateParser.getInstance().getFormats();
-        List<String> expectedFormats = Arrays.asList("MMMM dd, yyyy, hh:mm a\",\"EEE, dd MMM yyyy HH:mm:ss zzz\",\"EEE dd MMM yyyy HH:mm:ss Z\",\"dd MMM yyyy hh:mm:ss zzzz\",\"MMMM dd, yyyy, hh:mm:ss a\",\"EEE, dd MMM yyyy HH:mm zzz\",\"EEEE, dd MMMM yyyy HH:mm".split("\",\""));
+        List<String> expectedFormats = Arrays.asList("MMMM dd, yyyy, hh:mm a\",\"EEE, dd MMM yyyy HH:mm:ss zzz\",\"EEE dd MMM yyyy HH:mm:ss Z\",\"dd MMM yyyy hh:mm:ss zzzz\",\"MMMM dd, yyyy, hh:mm:ss a\",\"EEE, dd MMM yyyy HH:mm zzz\",\"EEEE, dd MMMM yyyy HH:mm"
+                .split("\",\""));
         for(String format : formats)
             if(!expectedFormats.contains(format))
                 Assert.fail();
