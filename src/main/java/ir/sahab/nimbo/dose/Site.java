@@ -51,6 +51,10 @@ public class Site {
     public void update() {
         RssFeedParser parser = new RssFeedParser(rssFeedUrl);
         RssFeed feed = parser.readFeed();
+        addNewsToDb(feed);
+    }
+
+    public void addNewsToDb(RssFeed feed){
         for (RssFeedMessage message : feed.getMessages()) {
             News news = new News(message, address);
             news.fetch();

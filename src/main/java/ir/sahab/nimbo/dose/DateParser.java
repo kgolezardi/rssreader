@@ -8,6 +8,8 @@ public class DateParser {
     private List<String> formats;
     private static DateParser ourInstance = new DateParser();
 
+    public List<String> getFormats() { return formats; }
+
     public static DateParser getInstance() {
         return ourInstance;
     }

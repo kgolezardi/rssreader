@@ -77,6 +77,11 @@ public class News {
         return null;
     }
 
+    @Override
+    public boolean equals(Object o){
+        return this.getUrl().equals(((News)o).getUrl());
+    }
+
     public String getTitle() {
         return title;
     }

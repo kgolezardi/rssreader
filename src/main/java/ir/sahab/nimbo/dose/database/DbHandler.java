@@ -214,6 +214,7 @@ public class DbHandler {
     }
 
     public List<News> getNewsBySite(String siteName, int limit) {
+        //TODO limit==-1 should return all news
         List<News> news = new ArrayList<>();
         String sql = "SELECT url, text, title, pubTime, siteName FROM News " +
                 "WHERE siteName=? ORDER BY pubTime DESC LIMIT ?";
