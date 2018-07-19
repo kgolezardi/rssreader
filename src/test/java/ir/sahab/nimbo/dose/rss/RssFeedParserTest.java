@@ -26,7 +26,7 @@ public class RssFeedParserTest {
 
     @Test
     public void messagesUrlTest() {
-        for (RssFeedMessage message: rssFeed.getMessages()) {
+        for (RssFeedMessage message : rssFeed.getMessages()) {
             try {
                 new URL(message.getLink());
             } catch (MalformedURLException m) {
