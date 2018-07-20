@@ -43,7 +43,9 @@ public class SiteTest {
         message.setTitle("ما اصلاح\u200Cطلبان سوپاپ اطمینان نظامیم");
         message.setPubDate("Wed, 18 Jul 2018 14:29:03 GMT");
         feed.getMessages().add(message);
-        site.addNewsToDb(feed);//TODO set limit to -1
+        site.addToDb();
+        site.addNewsToDb(feed);
+        //TODO set limit to -1
         Assert.assertTrue(DbHandler.getInstance().getNewsBySite("ISNA", 1)
                 .contains(new News(message, site.getAddress())));
     }
@@ -53,7 +55,7 @@ public class SiteTest {
     }
     @Test
     public void update() {
+        site.addToDb();
         site.update();
-
     }
 }

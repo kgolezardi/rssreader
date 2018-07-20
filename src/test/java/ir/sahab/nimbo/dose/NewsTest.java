@@ -34,6 +34,7 @@ public class NewsTest {
 
     @Test
     public void fetch() {
+        site.addToDb();
         news.fetch();
         Assert.assertEquals(news.getText(), text);
     }
@@ -41,6 +42,7 @@ public class NewsTest {
 
     @Test
     public void addToDb() {
+        site.addToDb();
         news.fetch();
         news.addToDb();
         //TODO: set limit to -1

@@ -48,7 +48,7 @@ public class DbHandler {
              Statement stmt = conn.createStatement()) {
             String createSite = "CREATE TABLE IF NOT EXISTS `Sites` (\n" +
                     "  `name` varchar(45) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
-                    "  `link` varchar(200) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
+                    "  `link` varchar(500) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
                     "  `tag` varchar(50) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
                     "  `attribute` varchar(50) COLLATE utf8mb4_persian_ci DEFAULT NULL,\n" +
                     "  `attributeValue` varchar(200) COLLATE utf8mb4_persian_ci DEFAULT NULL,\n" +
@@ -58,7 +58,7 @@ public class DbHandler {
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_persian_ci;\n";
 
             String createNews = "CREATE TABLE IF NOT EXISTS `News` (\n" +
-                    "  `url` varchar(200) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
+                    "  `url` varchar(500) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
                     "  `text` text COLLATE utf8mb4_persian_ci,\n" +
                     "  `title` varchar(300) COLLATE utf8mb4_persian_ci NOT NULL,\n" +
                     "  `pubTime` datetime NOT NULL,\n" +

@@ -1,6 +1,7 @@
 package ir.sahab.nimbo.dose;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -8,8 +9,8 @@ import static org.junit.Assert.*;
 public class ConfigTest {
 
     @Test
-    public void getInstanceNewsReader() {
-        Assert.assertEquals(Config.getInstance().DB_NAME, "NewsReader");
+    public void getInstanceDbName() {
+        Assert.assertEquals(Config.getInstance().DB_NAME, "NewsReaderTest");
     }
 
     @Test
@@ -17,7 +18,7 @@ public class ConfigTest {
         Assert.assertEquals(Config.getInstance().USER, "root");
     }
 
-    @Test
+    @Ignore
     public void getInstanceSettings() {
         System.out.println(Config.getInstance().CONNECTION_SETTINGS);
         Assert.assertEquals(Config.getInstance().USER, "root");
