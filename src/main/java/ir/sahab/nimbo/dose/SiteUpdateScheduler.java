@@ -21,7 +21,7 @@ public class SiteUpdateScheduler implements Runnable {
 
     @Override
     public void run() {
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(10,
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(Config.getInstance().THREAD_POOL,
                 r -> {
                     Thread t = Executors.defaultThreadFactory().newThread(r);
                     t.setDaemon(true);
@@ -32,6 +32,6 @@ public class SiteUpdateScheduler implements Runnable {
             for (Site site : sites) {
                 executor.submit(site::update);
             }
-        }, 1, 10, TimeUnit.SECONDS);
+        }, Config.getInstance().INITIAL_DELAY, Config.getInstance().DELAY, TimeUnit.SECONDS);
     }
 }

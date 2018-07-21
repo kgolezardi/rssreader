@@ -248,7 +248,7 @@ public class DbHandler {
     public List<News> getNewsBySiteDate(String siteName, Date time) {
         List<News> news = new ArrayList<>();
         java.sql.Date sqlDate = new java.sql.Date(time.getTime());
-        String sql = "SELECT url, text, title, pubTime FROM News " +
+        String sql = "SELECT url, text, title, pubTime, siteName FROM News " +
                 "WHERE siteName=? AND DATE(pubTime)=?";
 
         try (Connection conn = DataSource.getInstance().getConnection();

@@ -11,6 +11,9 @@ public class Config {
     public final String CONNECTION_SETTINGS;
     public final String DB_NAME;
     public final String FORMATS;
+    public final int THREAD_POOL;
+    public final int INITIAL_DELAY;
+    public final int DELAY;
 
     private static Config ourInstance = new Config();
 
@@ -35,5 +38,9 @@ public class Config {
         PASS = props.getProperty("pass");
 
         FORMATS = props.getProperty("formats");
+
+        THREAD_POOL = Integer.valueOf(props.getProperty("thread_pool"));
+        INITIAL_DELAY = Integer.valueOf(props.getProperty("initial_delay"));
+        DELAY = Integer.valueOf(props.getProperty("delay"));
     }
 }

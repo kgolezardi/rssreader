@@ -74,8 +74,10 @@ public class ConsoleInterface implements Runnable {
                                 "Please choose another name and try again.");
                     else if (DbHandler.getInstance().existsSiteByLink(feedUrl))
                         System.out.println("This site is already in the database.");
-                    else
+                    else {
                         site.addToDb();
+                        site.update();
+                    }
                     break;
                     // TODO: get exception when cannot connect to the new site
 
