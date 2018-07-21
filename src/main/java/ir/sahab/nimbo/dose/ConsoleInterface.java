@@ -68,9 +68,16 @@ public class ConsoleInterface implements Runnable {
                     System.out.print("Attribute value: ");
                     String attributeValue = scanner.nextLine();
 
-                    new Site(address, feedUrl, tag, attribute, attributeValue).addToDb();
+                    Site site = new Site(address, feedUrl, tag, attribute, attributeValue);
+                    if (DbHandler.getInstance().existsSiteByName(address))
+                        System.out.println("The name you are using for this site is already taken. " +
+                                "Please choose another name and try again.");
+                    else if (DbHandler.getInstance().existsSiteByLink(feedUrl))
+                        System.out.println("This site is already in the database.");
+                    else
+                        site.addToDb();
                     break;
-                    // TODO: get exception when duplicated
+                    // TODO: get exception when cannot connect to the new site
 
                 case "search":
                     System.out.print("Title contains: ");

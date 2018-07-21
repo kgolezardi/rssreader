@@ -118,11 +118,11 @@ public class DbHandler {
         return sites;
     }
 
-    public boolean existsUrl(String url) {
-        String sql = "SELECT url FROM News WHERE url=?";
+    private boolean existsRowByAttribute(String table, String col, String value) {
+        String sql = "SELECT * FROM " + table + " WHERE " + col + "=?";
         try (Connection conn = DataSource.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, url);
+            stmt.setString(1, value);
             ResultSet rs = stmt.executeQuery();
             if (rs.next())
                 return true;
@@ -130,6 +130,18 @@ public class DbHandler {
             se.printStackTrace();
         }
         return false;
+    }
+
+    public boolean existsUrl(String url) {
+        return existsRowByAttribute("News", "url", url);
+    }
+
+    public boolean existsSiteByName(String name) {
+        return existsRowByAttribute("Sites","name", name);
+    }
+
+    public boolean existsSiteByLink(String link) {
+        return existsRowByAttribute("Sites","link", link);
     }
 
     public boolean addNews(News news) {
