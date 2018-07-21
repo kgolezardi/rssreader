@@ -8,7 +8,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class SiteUpdateScheduler implements Runnable {
-    // TODO: get configs
     private static SiteUpdateScheduler ourInstance = new SiteUpdateScheduler();
 
     public static SiteUpdateScheduler getInstance() {

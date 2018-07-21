@@ -45,7 +45,7 @@ public class NewsTest {
         site.addToDb();
         news.fetch();
         news.addToDb();
-        //TODO: set limit to -1
+        // TODO: set limit to -1
         List<News> newsBySiteDate = DbHandler.getInstance().getNewsBySite(news.getSiteName(), 1);
         Assert.assertTrue(newsBySiteDate.contains(news));
     }

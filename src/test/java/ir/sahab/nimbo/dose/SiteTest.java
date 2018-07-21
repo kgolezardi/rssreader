@@ -45,7 +45,7 @@ public class SiteTest {
         feed.getMessages().add(message);
         site.addToDb();
         site.addNewsToDb(feed);
-        //TODO set limit to -1
+        // TODO:  set limit to -1
         Assert.assertTrue(DbHandler.getInstance().getNewsBySite("ISNA", 1)
                 .contains(new News(message, site.getAddress())));
     }
